@@ -14,8 +14,14 @@ public enum LengthUnit implements Unit {
         this.baseUnitConversionFactor = baseUnitConversionFactor;
     }
 
+    // UC8: Implemented isolated conversion math
     @Override
-    public double getBaseUnitConversionFactor() {
-        return baseUnitConversionFactor;
+    public double convertToBaseUnit(double value) {
+        return value * this.baseUnitConversionFactor;
+    }
+
+    @Override
+    public double convertFromBaseUnit(double baseValue) {
+        return baseValue / this.baseUnitConversionFactor;
     }
 }

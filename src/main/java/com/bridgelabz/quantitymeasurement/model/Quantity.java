@@ -22,14 +22,16 @@ public class Quantity<T extends Unit> {
         return unit;
     }
 
+    // UC8: Delegated base value conversion math to Unit interface
     public Quantity<T> convertTo(T targetUnit) {
         double newBaseValue = this.getBaseValue();
-        double targetValue = newBaseValue / targetUnit.getBaseUnitConversionFactor();
+        double targetValue = targetUnit.convertFromBaseUnit(newBaseValue);
         return new Quantity<>(targetValue, targetUnit);
     }
 
+    // UC8: Delegated base value calculation to Unit interface
     private double getBaseValue() {
-        return this.value * this.unit.getBaseUnitConversionFactor();
+        return this.unit.convertToBaseUnit(this.value);
     }
 
     // UC6 & UC7: Addition of Two Length Units (Overloaded)
@@ -47,7 +49,7 @@ public class Quantity<T extends Unit> {
         }
 
         double totalBaseValue = this.getBaseValue() + other.getBaseValue();
-        double newValue = totalBaseValue / targetUnit.getBaseUnitConversionFactor();
+        double newValue = targetUnit.convertFromBaseUnit(totalBaseValue);
         
         return new Quantity<>(newValue, targetUnit);
     }
