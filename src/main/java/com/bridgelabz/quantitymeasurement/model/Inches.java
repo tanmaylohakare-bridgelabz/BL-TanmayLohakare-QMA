@@ -2,36 +2,37 @@ package com.bridgelabz.quantitymeasurement.model;
 
 import java.util.Objects;
 
-public class Feet {
+public class Inches {
 
     private final double value;
     private static final double DIFFERENCE = 0.0001;
 
-
-    public Feet(double value) {
+    public Inches(double value) {
         this.value = value;
     }
 
     public double getValue() {
         return value;
     }
-    
-    double toInches() {
-        return value * 12;
-    }
 
+    double toInches() {
+        return value;
+    }
 
     @Override
     public boolean equals(Object obj) {
 
-        // Check if object is null
         if (obj == null) {
             return false;
         }
 
-        // Check same reference
         if (this == obj) {
             return true;
+        }
+
+        if (obj instanceof Inches) {
+            Inches inches = (Inches) obj;
+            return Math.abs(this.toInches() - inches.toInches()) < DIFFERENCE;
         }
 
         if (obj instanceof Feet) {
@@ -39,13 +40,8 @@ public class Feet {
             return Math.abs(this.toInches() - feet.toInches()) < DIFFERENCE;
         }
 
-
-        if (obj instanceof Inches) {
-            Inches inches = (Inches) obj;
-            return Math.abs(this.toInches() - inches.toInches()) < DIFFERENCE;
-        }
-
-        return false;    }
+        return false;
+    }
 
     @Override
     public int hashCode() {
