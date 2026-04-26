@@ -45,5 +45,15 @@ public class QuantityApplication {
         Quantity<LengthUnit> fiveCentimeters = new Quantity<>(5.0, LengthUnit.CENTIMETER);
 
         System.out.println("2 Inches == 5 Centimeters : " + twoInches.equals(fiveCentimeters));
+
+        System.out.println("\n--- UC5 Conversions ---");
+        Quantity<LengthUnit> convertedYard = oneYard.convertTo(LengthUnit.INCHES);
+        System.out.println("Converted 1 Yard to Inches: " + convertedYard.getValue() + " " + convertedYard.getUnit());
+        
+
+
+        
+                
+                
     }
 }

@@ -1,6 +1,12 @@
 package com.bridgelabz.quantitymeasurement.interfaces;
 
+/**
+ * Base interface for measurement units.
+ */
 public interface Unit {
-    // forces all units to define how they convert back to a standard base (like inches)
+    
+    /**
+     * @return conversion factor to the base unit for this category
+     */
     double getBaseUnitConversionFactor();
 }

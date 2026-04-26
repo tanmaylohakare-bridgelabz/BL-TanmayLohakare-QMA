@@ -127,4 +127,32 @@ public class QuantityTest {
         Quantity<LengthUnit> centimeters = new Quantity<>(5.0, LengthUnit.CENTIMETER);
         Assertions.assertEquals(inches, centimeters);
     }
+
+    @Test
+    public void givenOneYard_WhenConvertedToInches_ShouldReturnThirtySixInches() {
+        Quantity<LengthUnit> yard = new Quantity<>(1.0, LengthUnit.YARD);
+        Quantity<LengthUnit> convertedToInches = yard.convertTo(LengthUnit.INCHES);
+        
+        Assertions.assertEquals(36.0, convertedToInches.getValue(), 0.0001);
+        Assertions.assertEquals(LengthUnit.INCHES, convertedToInches.getUnit());
+    }
+
+    @Test
+    public void givenTwoInches_WhenConvertedToCentimeters_ShouldReturnFiveCentimeters() {
+        Quantity<LengthUnit> inches = new Quantity<>(2.0, LengthUnit.INCHES);
+        Quantity<LengthUnit> convertedToCm = inches.convertTo(LengthUnit.CENTIMETER);
+        
+        Assertions.assertEquals(5.0, convertedToCm.getValue(), 0.0001);
+        Assertions.assertEquals(LengthUnit.CENTIMETER, convertedToCm.getUnit());
+    }
+
+    @Test
+    public void givenQuantity_WhenConverted_ShouldReturnNewInstanceForImmutability() {
+        Quantity<LengthUnit> feet = new Quantity<>(1.0, LengthUnit.FEET);
+        Quantity<LengthUnit> convertedToInches = feet.convertTo(LengthUnit.INCHES);
+        
+        // Assert they are mathematically equal but are different object instances
+        Assertions.assertEquals(feet, convertedToInches);
+        Assertions.assertNotSame(feet, convertedToInches);
+    }
 }

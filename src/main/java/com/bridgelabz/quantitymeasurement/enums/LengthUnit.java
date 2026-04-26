@@ -2,6 +2,9 @@ package com.bridgelabz.quantitymeasurement.enums;
 
 import com.bridgelabz.quantitymeasurement.interfaces.Unit;
 
+/**
+ * Length measurement units with conversion factors relative to inches.
+ */
 public enum LengthUnit implements Unit {
     FEET(12.0),
     INCHES(1.0),
