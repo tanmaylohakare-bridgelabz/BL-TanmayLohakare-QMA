@@ -32,12 +32,16 @@ public class Quantity<T extends Unit> {
         }
         Quantity<?> quantity = (Quantity<?>) obj;
         
+        // restrict cross-category comparisons (e.g. can't compare length to volume later)
         if (!this.unit.getClass().equals(quantity.unit.getClass())) {
             return false;
         }
 
+        // scale both to the base unit for a fair comparison
         double thisBaseValue = this.value * this.unit.getBaseUnitConversionFactor();
         double otherBaseValue = quantity.value * quantity.unit.getBaseUnitConversionFactor();
+        
+        // small delta to prevent floating point math weirdness
         return Math.abs(thisBaseValue - otherBaseValue) < DIFFERENCE;
     }
 

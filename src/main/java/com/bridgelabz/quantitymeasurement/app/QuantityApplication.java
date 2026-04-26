@@ -35,5 +35,15 @@ public class QuantityApplication {
         Quantity<LengthUnit> differentInches = new Quantity<>(10.0, LengthUnit.INCHES);
 
         System.out.println("1 Feet == 10 Inches : " + differentFeet.equals(differentInches));
+
+        Quantity<LengthUnit> threeFeet = new Quantity<>(3.0, LengthUnit.FEET);
+        Quantity<LengthUnit> oneYard = new Quantity<>(1.0, LengthUnit.YARD);
+
+        System.out.println("3 Feet == 1 Yard : " + threeFeet.equals(oneYard));
+
+        Quantity<LengthUnit> twoInches = new Quantity<>(2.0, LengthUnit.INCHES);
+        Quantity<LengthUnit> fiveCentimeters = new Quantity<>(5.0, LengthUnit.CENTIMETER);
+
+        System.out.println("2 Inches == 5 Centimeters : " + twoInches.equals(fiveCentimeters));
     }
 }

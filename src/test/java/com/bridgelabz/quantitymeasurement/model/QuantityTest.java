@@ -78,4 +78,53 @@ public class QuantityTest {
         Quantity<LengthUnit> inches = new Quantity<>(12.0, LengthUnit.INCHES);
         Assertions.assertNotEquals(inches, null);
     }
+
+    @Test
+    public void givenThreeFeetAndOneYard_ShouldReturnEqual() {
+        Quantity<LengthUnit> feet = new Quantity<>(3.0, LengthUnit.FEET);
+        Quantity<LengthUnit> yard = new Quantity<>(1.0, LengthUnit.YARD);
+        Assertions.assertEquals(feet, yard);
+    }
+
+    @Test
+    public void givenOneFeetAndOneYard_ShouldReturnNotEqual() {
+        Quantity<LengthUnit> feet = new Quantity<>(1.0, LengthUnit.FEET);
+        Quantity<LengthUnit> yard = new Quantity<>(1.0, LengthUnit.YARD);
+        Assertions.assertNotEquals(feet, yard);
+    }
+
+    @Test
+    public void givenOneInchAndOneYard_ShouldReturnNotEqual() {
+        Quantity<LengthUnit> inch = new Quantity<>(1.0, LengthUnit.INCHES);
+        Quantity<LengthUnit> yard = new Quantity<>(1.0, LengthUnit.YARD);
+        Assertions.assertNotEquals(inch, yard);
+    }
+
+    @Test
+    public void givenOneYardAndThirtySixInches_ShouldReturnEqual() {
+        Quantity<LengthUnit> yard = new Quantity<>(1.0, LengthUnit.YARD);
+        Quantity<LengthUnit> inches = new Quantity<>(36.0, LengthUnit.INCHES);
+        Assertions.assertEquals(yard, inches);
+    }
+
+    @Test
+    public void givenThirtySixInchesAndOneYard_ShouldReturnEqual() {
+        Quantity<LengthUnit> inches = new Quantity<>(36.0, LengthUnit.INCHES);
+        Quantity<LengthUnit> yard = new Quantity<>(1.0, LengthUnit.YARD);
+        Assertions.assertEquals(inches, yard);
+    }
+
+    @Test
+    public void givenOneYardAndThreeFeet_ShouldReturnEqual() {
+        Quantity<LengthUnit> yard = new Quantity<>(1.0, LengthUnit.YARD);
+        Quantity<LengthUnit> feet = new Quantity<>(3.0, LengthUnit.FEET);
+        Assertions.assertEquals(yard, feet);
+    }
+
+    @Test
+    public void givenTwoInchesAndFiveCentimeters_ShouldReturnEqual() {
+        Quantity<LengthUnit> inches = new Quantity<>(2.0, LengthUnit.INCHES);
+        Quantity<LengthUnit> centimeters = new Quantity<>(5.0, LengthUnit.CENTIMETER);
+        Assertions.assertEquals(inches, centimeters);
+    }
 }
