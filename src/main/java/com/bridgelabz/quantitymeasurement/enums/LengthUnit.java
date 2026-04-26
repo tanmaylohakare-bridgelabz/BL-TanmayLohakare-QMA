@@ -2,14 +2,11 @@ package com.bridgelabz.quantitymeasurement.enums;
 
 import com.bridgelabz.quantitymeasurement.interfaces.Unit;
 
-/**
- * Length measurement units with conversion factors relative to inches.
- */
 public enum LengthUnit implements Unit {
     FEET(12.0),
     INCHES(1.0),
     YARD(36.0),
-    CENTIMETER(0.4); // 2.5 cm = 1 inch, so we use 0.4 as the base multiplier
+    CENTIMETER(0.4);
 
     private final double baseUnitConversionFactor;
 

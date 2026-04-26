@@ -155,4 +155,52 @@ public class QuantityTest {
         Assertions.assertEquals(feet, convertedToInches);
         Assertions.assertNotSame(feet, convertedToInches);
     }
+
+    @Test
+    public void givenTwoInchesAndTwoInches_WhenAdded_ShouldReturnFourInches() {
+        Quantity<LengthUnit> inches1 = new Quantity<>(2.0, LengthUnit.INCHES);
+        Quantity<LengthUnit> inches2 = new Quantity<>(2.0, LengthUnit.INCHES);
+        Quantity<LengthUnit> sum = inches1.add(inches2);
+        Assertions.assertEquals(new Quantity<>(4.0, LengthUnit.INCHES), sum);
+        Assertions.assertEquals(4.0, sum.getValue(), 0.0001);
+        Assertions.assertEquals(LengthUnit.INCHES, sum.getUnit());
+    }
+
+    @Test
+    public void givenOneFootAndTwoInches_WhenAdded_ShouldReturnFourteenInches() {
+        Quantity<LengthUnit> foot = new Quantity<>(1.0, LengthUnit.FEET);
+        Quantity<LengthUnit> inches = new Quantity<>(2.0, LengthUnit.INCHES);
+        Quantity<LengthUnit> sum = foot.add(inches);
+        
+        // Mathematical equality checks handle normalization automatically
+        Assertions.assertEquals(new Quantity<>(14.0, LengthUnit.INCHES), sum);
+    }
+
+    @Test
+    public void givenOneFootAndOneFoot_WhenAdded_ShouldReturnTwoFeet() {
+        Quantity<LengthUnit> foot1 = new Quantity<>(1.0, LengthUnit.FEET);
+        Quantity<LengthUnit> foot2 = new Quantity<>(1.0, LengthUnit.FEET);
+        Quantity<LengthUnit> sum = foot1.add(foot2);
+        Assertions.assertEquals(new Quantity<>(2.0, LengthUnit.FEET), sum);
+        Assertions.assertEquals(2.0, sum.getValue(), 0.0001);
+        Assertions.assertEquals(LengthUnit.FEET, sum.getUnit());
+    }
+
+    @Test
+    public void givenTwoInchesAndTwoAndHalfCentimeters_WhenAdded_ShouldReturnThreeInches() {
+        Quantity<LengthUnit> inches = new Quantity<>(2.0, LengthUnit.INCHES);
+        Quantity<LengthUnit> centimeters = new Quantity<>(2.5, LengthUnit.CENTIMETER);
+        Quantity<LengthUnit> sum = inches.add(centimeters);
+        Assertions.assertEquals(new Quantity<>(3.0, LengthUnit.INCHES), sum);
+        Assertions.assertEquals(3.0, sum.getValue(), 0.0001);
+        Assertions.assertEquals(LengthUnit.INCHES, sum.getUnit());
+    }
+
+    @Test
+    public void givenQuantityAndNull_WhenAdded_ShouldThrowException() {
+        Quantity<LengthUnit> inches = new Quantity<>(2.0, LengthUnit.INCHES);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            inches.add(null);
+        });
+    }
 }

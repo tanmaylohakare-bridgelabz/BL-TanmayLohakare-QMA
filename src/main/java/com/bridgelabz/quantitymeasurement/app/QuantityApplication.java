@@ -50,10 +50,14 @@ public class QuantityApplication {
         Quantity<LengthUnit> convertedYard = oneYard.convertTo(LengthUnit.INCHES);
         System.out.println("Converted 1 Yard to Inches: " + convertedYard.getValue() + " " + convertedYard.getUnit());
         
+        System.out.println("\n--- UC6 Addition ---");
+        Quantity<LengthUnit> sumInches = twoInches.add(twoInches);
+        System.out.println("2 Inches + 2 Inches = " + sumInches.getValue() + " " + sumInches.getUnit());
 
+        Quantity<LengthUnit> sumFeet = foot.add(twoInches);
+        System.out.println("1 Foot + 2 Inches = " + sumFeet.getValue() + " " + sumFeet.getUnit());
 
-        
-                
-                
+        Quantity<LengthUnit> sumMixed = twoInches.add(fiveCentimeters);
+        System.out.println("2 Inches + 5 Centimeters = " + sumMixed.getValue() + " " + sumMixed.getUnit());
     }
 }
