@@ -59,5 +59,12 @@ public class QuantityApplication {
 
         Quantity<LengthUnit> sumMixed = twoInches.add(fiveCentimeters);
         System.out.println("2 Inches + 5 Centimeters = " + sumMixed.getValue() + " " + sumMixed.getUnit());
+
+        System.out.println("\n--- UC7 Addition with Target Unit ---");
+        Quantity<LengthUnit> sumTargetCm = twoInches.add(twoInches, LengthUnit.CENTIMETER);
+        System.out.println("2 Inches + 2 Inches (in CM) = " + sumTargetCm.getValue() + " " + sumTargetCm.getUnit());
+
+        Quantity<LengthUnit> sumTargetInches = foot.add(twoInches, LengthUnit.INCHES);
+        System.out.println("1 Foot + 2 Inches (in Inches) = " + sumTargetInches.getValue() + " " + sumTargetInches.getUnit());
     }
 }

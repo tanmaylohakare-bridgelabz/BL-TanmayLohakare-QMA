@@ -203,4 +203,33 @@ public class QuantityTest {
             inches.add(null);
         });
     }
+
+    @Test
+    public void givenTwoInchesAndTwoInches_WhenAddedWithTargetCentimeter_ShouldReturnTenCentimeters() {
+        Quantity<LengthUnit> inches1 = new Quantity<>(2.0, LengthUnit.INCHES);
+        Quantity<LengthUnit> inches2 = new Quantity<>(2.0, LengthUnit.INCHES);
+        Quantity<LengthUnit> sum = inches1.add(inches2, LengthUnit.CENTIMETER);
+        Assertions.assertEquals(new Quantity<>(10.0, LengthUnit.CENTIMETER), sum);
+        Assertions.assertEquals(10.0, sum.getValue(), 0.0001);
+        Assertions.assertEquals(LengthUnit.CENTIMETER, sum.getUnit());
+    }
+
+    @Test
+    public void givenOneFootAndTwoInches_WhenAddedWithTargetInches_ShouldReturnFourteenInches() {
+        Quantity<LengthUnit> foot = new Quantity<>(1.0, LengthUnit.FEET);
+        Quantity<LengthUnit> inches = new Quantity<>(2.0, LengthUnit.INCHES);
+        Quantity<LengthUnit> sum = foot.add(inches, LengthUnit.INCHES);
+        Assertions.assertEquals(new Quantity<>(14.0, LengthUnit.INCHES), sum);
+        Assertions.assertEquals(14.0, sum.getValue(), 0.0001);
+        Assertions.assertEquals(LengthUnit.INCHES, sum.getUnit());
+    }
+
+    @Test
+    public void givenQuantityAndNullTargetUnit_WhenAdded_ShouldThrowException() {
+        Quantity<LengthUnit> inches = new Quantity<>(2.0, LengthUnit.INCHES);
+        Quantity<LengthUnit> other = new Quantity<>(2.0, LengthUnit.INCHES);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            inches.add(other, null);
+        });
+    }
 }

@@ -32,10 +32,14 @@ public class Quantity<T extends Unit> {
         return this.value * this.unit.getBaseUnitConversionFactor();
     }
 
-    // UC6: Addition of Two Length Units
+    // UC6 & UC7: Addition of Two Length Units (Overloaded)
     public Quantity<T> add(Quantity<T> other) {
-        if (other == null) {
-            throw new IllegalArgumentException("Cannot add a null quantity.");
+        return this.add(other, this.unit);
+    }
+
+    public Quantity<T> add(Quantity<T> other, T targetUnit) {
+        if (other == null || targetUnit == null) {
+            throw new IllegalArgumentException("Cannot add a null quantity or specify a null target unit.");
         }
         
         if (!this.unit.getClass().equals(other.unit.getClass())) {
@@ -43,9 +47,9 @@ public class Quantity<T extends Unit> {
         }
 
         double totalBaseValue = this.getBaseValue() + other.getBaseValue();
-        double newValue = totalBaseValue / this.unit.getBaseUnitConversionFactor();
+        double newValue = totalBaseValue / targetUnit.getBaseUnitConversionFactor();
         
-        return new Quantity<>(newValue, this.unit);
+        return new Quantity<>(newValue, targetUnit);
     }
 
     public boolean equals(Quantity<T> quantity) {
