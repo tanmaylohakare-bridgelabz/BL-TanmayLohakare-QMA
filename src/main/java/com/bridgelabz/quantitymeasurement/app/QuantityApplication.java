@@ -103,5 +103,22 @@ public class QuantityApplication {
         Quantity<VolumeUnit> ml = new Quantity<>(1000.0, VolumeUnit.MILLILITER);
         Quantity<VolumeUnit> sumVolume = litres.add(ml, VolumeUnit.LITRE);
         System.out.println("3.78 Litres + 1000 ml = " + sumVolume.getValue() + " " + sumVolume.getUnit());
+
+        System.out.println("\n--- UC12 Subtraction and Division Operations ---");
+        Quantity<LengthUnit> fourInches = new Quantity<>(4.0, LengthUnit.INCHES);
+        Quantity<LengthUnit> twoInches2 = new Quantity<>(2.0, LengthUnit.INCHES);
+        
+        Quantity<LengthUnit> differenceLength = fourInches.subtract(twoInches2);
+        System.out.println("4 Inches - 2 Inches = " + differenceLength.getValue() + " " + differenceLength.getUnit());
+
+        Quantity<LengthUnit> quotientLength = fourInches.divide(twoInches2);
+        System.out.println("4 Inches / 2 Inches = " + quotientLength.getValue() + " " + quotientLength.getUnit());
+
+        try {
+            System.out.println("Attempting to divide by zero...");
+            fourInches.divide(new Quantity<>(0.0, LengthUnit.INCHES));
+        } catch (ArithmeticException e) {
+            System.out.println("Caught Expected Exception: " + e.getMessage());
+        }
     }
 }

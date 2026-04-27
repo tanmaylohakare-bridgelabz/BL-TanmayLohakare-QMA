@@ -330,4 +330,49 @@ public class QuantityTest {
         Quantity<TemperatureUnit> celsius = new Quantity<>(0.0, TemperatureUnit.CELSIUS);
         Assertions.assertEquals(fahrenheit, celsius);
     }
+    
+    // UC12: Subtraction and Division Operations
+    @Test
+    public void givenFourInchesAndTwoInches_WhenSubtracted_ShouldReturnTwoInches() {
+        Quantity<LengthUnit> inches4 = new Quantity<>(4.0, LengthUnit.INCHES);
+        Quantity<LengthUnit> inches2 = new Quantity<>(2.0, LengthUnit.INCHES);
+        Quantity<LengthUnit> difference = inches4.subtract(inches2);
+        Assertions.assertEquals(new Quantity<>(2.0, LengthUnit.INCHES), difference);
+        Assertions.assertEquals(2.0, difference.getValue(), 0.0001);
+    }
+
+    @Test
+    public void givenOneFootAndTwoInches_WhenSubtractedWithTargetInches_ShouldReturnTenInches() {
+        Quantity<LengthUnit> foot = new Quantity<>(1.0, LengthUnit.FEET);
+        Quantity<LengthUnit> inches = new Quantity<>(2.0, LengthUnit.INCHES);
+        Quantity<LengthUnit> difference = foot.subtract(inches, LengthUnit.INCHES);
+        Assertions.assertEquals(new Quantity<>(10.0, LengthUnit.INCHES), difference);
+        Assertions.assertEquals(10.0, difference.getValue(), 0.0001);
+    }
+
+    @Test
+    public void givenFourInchesAndTwoInches_WhenDivided_ShouldReturnTwo() {
+        Quantity<LengthUnit> inches4 = new Quantity<>(4.0, LengthUnit.INCHES);
+        Quantity<LengthUnit> inches2 = new Quantity<>(2.0, LengthUnit.INCHES);
+        Quantity<LengthUnit> quotient = inches4.divide(inches2, LengthUnit.INCHES);
+        Assertions.assertEquals(2.0, quotient.getValue(), 0.0001);
+    }
+
+    @Test
+    public void givenQuantityAndZeroQuantity_WhenDivided_ShouldThrowArithmeticException() {
+        Quantity<LengthUnit> inches = new Quantity<>(4.0, LengthUnit.INCHES);
+        Quantity<LengthUnit> zeroInches = new Quantity<>(0.0, LengthUnit.INCHES);
+        Assertions.assertThrows(ArithmeticException.class, () -> {
+            inches.divide(zeroInches);
+        });
+    }
+
+    @Test
+    public void givenTwoQuantitiesOfDifferentCategories_WhenSubtracted_ShouldThrowIllegalArgumentException() {
+        Quantity<LengthUnit> inch = new Quantity<>(1.0, LengthUnit.INCHES);
+        Quantity<WeightUnit> gram = new Quantity<>(1.0, WeightUnit.GRAM);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            inch.subtract((Quantity) gram);
+        });
+    }
 }

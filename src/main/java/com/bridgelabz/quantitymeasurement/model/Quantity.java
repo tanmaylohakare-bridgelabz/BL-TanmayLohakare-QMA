@@ -34,14 +34,9 @@ public class Quantity<T extends Unit> {
         return this.unit.convertToBaseUnit(this.value);
     }
 
-    // UC6 & UC7: Addition of Two Length Units (Overloaded)
-    public Quantity<T> add(Quantity<T> other) {
-        return this.add(other, this.unit);
-    }
-
-    public Quantity<T> add(Quantity<T> other, T targetUnit) {
+    private void validateArithmeticOperation(Quantity<T> other, T targetUnit) {
         if (other == null || targetUnit == null) {
-            throw new IllegalArgumentException("Cannot add a null quantity or specify a null target unit.");
+            throw new IllegalArgumentException("Cannot perform arithmetic with a null quantity or specify a null target unit.");
         }
         
         // UC10: Runtime Cross-Category Type Safety logic for Enums
@@ -49,13 +44,43 @@ public class Quantity<T extends Unit> {
         Class<?> otherCategory = other.unit instanceof Enum ? ((Enum<?>) other.unit).getDeclaringClass() : other.unit.getClass();
         
         if (!thisCategory.equals(otherCategory)) {
-            throw new IllegalArgumentException("Cannot add quantities of different measurement categories.");
+            throw new IllegalArgumentException("Cannot perform arithmetic on quantities of different measurement categories.");
         }
+    }
 
+    // UC6 & UC7: Addition of Two Units (Overloaded)
+    public Quantity<T> add(Quantity<T> other) {
+        return this.add(other, this.unit);
+    }
+
+    public Quantity<T> add(Quantity<T> other, T targetUnit) {
+        this.validateArithmeticOperation(other, targetUnit);
         double totalBaseValue = this.getBaseValue() + other.getBaseValue();
-        double newValue = targetUnit.convertFromBaseUnit(totalBaseValue);
-        
-        return new Quantity<>(newValue, targetUnit);
+        return new Quantity<>(targetUnit.convertFromBaseUnit(totalBaseValue), targetUnit);
+    }
+
+    // UC12: Subtraction and Division Operations
+    public Quantity<T> subtract(Quantity<T> other) {
+        return this.subtract(other, this.unit);
+    }
+
+    public Quantity<T> subtract(Quantity<T> other, T targetUnit) {
+        this.validateArithmeticOperation(other, targetUnit);
+        double differenceBaseValue = this.getBaseValue() - other.getBaseValue();
+        return new Quantity<>(targetUnit.convertFromBaseUnit(differenceBaseValue), targetUnit);
+    }
+
+    public Quantity<T> divide(Quantity<T> other) {
+        return this.divide(other, this.unit);
+    }
+
+    public Quantity<T> divide(Quantity<T> other, T targetUnit) {
+        this.validateArithmeticOperation(other, targetUnit);
+        if (Math.abs(other.getBaseValue()) < DIFFERENCE) {
+            throw new ArithmeticException("Cannot divide by zero quantity.");
+        }
+        double quotientBaseValue = this.getBaseValue() / other.getBaseValue();
+        return new Quantity<>(targetUnit.convertFromBaseUnit(quotientBaseValue), targetUnit);
     }
 
     public boolean equals(Quantity<T> quantity) {
