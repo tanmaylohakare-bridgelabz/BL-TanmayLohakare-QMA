@@ -5,6 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.bridgelabz.quantitymeasurement.model.Quantity;
 import com.bridgelabz.quantitymeasurement.enums.LengthUnit;
 import com.bridgelabz.quantitymeasurement.enums.WeightUnit;
+import com.bridgelabz.quantitymeasurement.enums.VolumeUnit;
+import com.bridgelabz.quantitymeasurement.enums.TemperatureUnit;
 
 @SpringBootApplication(scanBasePackages = "com.bridgelabz.quantitymeasurement")
 public class QuantityApplication {
@@ -73,5 +75,28 @@ public class QuantityApplication {
         Quantity<WeightUnit> grams = new Quantity<>(1000.0, WeightUnit.GRAM);
         Quantity<WeightUnit> sumWeight = tonne.add(grams, WeightUnit.KILOGRAM);
         System.out.println("1 Tonne + 1000 Grams (in Kilogram) = " + sumWeight.getValue() + " " + sumWeight.getUnit());
+
+        System.out.println("\n--- UC10 Generic Quantity Class for Multi-Category Support ---");
+        System.out.println("Demonstrating Scalability and Extensibility (Volumes & Temperatures)");
+        
+        Quantity<VolumeUnit> gallon = new Quantity<>(1.0, VolumeUnit.GALLON);
+        Quantity<VolumeUnit> litres = new Quantity<>(3.78, VolumeUnit.LITRE);
+        System.out.println("1 Gallon == 3.78 Litres : " + gallon.equals(litres));
+
+        Quantity<TemperatureUnit> boilingF = new Quantity<>(212.0, TemperatureUnit.FAHRENHEIT);
+        Quantity<TemperatureUnit> boilingC = new Quantity<>(100.0, TemperatureUnit.CELSIUS);
+        System.out.println("212 Fahrenheit == 100 Celsius : " + boilingF.equals(boilingC));
+
+        System.out.println("\nDemonstrating Cross-Category Type Safety (Compile-time & Runtime)");
+        try {
+            // Uncommenting the next line would cause a compile-time error due to Generics Type Safety!
+            // foot.add(gallon); 
+            
+            // Testing runtime type safety by casting
+            Quantity rawFoot = foot;
+            rawFoot.add(gallon);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Caught Expected Exception: " + e.getMessage());
+        }
     }
 }

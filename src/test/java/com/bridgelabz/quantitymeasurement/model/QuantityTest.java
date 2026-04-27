@@ -2,6 +2,8 @@ package com.bridgelabz.quantitymeasurement.model;
 
 import com.bridgelabz.quantitymeasurement.enums.LengthUnit;
 import com.bridgelabz.quantitymeasurement.enums.WeightUnit;
+import com.bridgelabz.quantitymeasurement.enums.VolumeUnit;
+import com.bridgelabz.quantitymeasurement.enums.TemperatureUnit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -280,5 +282,43 @@ public class QuantityTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             inch.add((Quantity) gram);
         });
+    }
+
+    // UC10: Volume Measurement Tests
+    @Test
+    public void givenOneGallonAndThreePointSevenEightLitres_WhenCompared_ShouldReturnEqual() {
+        Quantity<VolumeUnit> gallon = new Quantity<>(1.0, VolumeUnit.GALLON);
+        Quantity<VolumeUnit> litres = new Quantity<>(3.78, VolumeUnit.LITRE);
+        Assertions.assertEquals(gallon, litres);
+    }
+
+    @Test
+    public void givenOneLitreAndThousandMilliliters_WhenCompared_ShouldReturnEqual() {
+        Quantity<VolumeUnit> litre = new Quantity<>(1.0, VolumeUnit.LITRE);
+        Quantity<VolumeUnit> milliliters = new Quantity<>(1000.0, VolumeUnit.MILLILITER);
+        Assertions.assertEquals(litre, milliliters);
+    }
+
+    @Test
+    public void givenOneGallonAndThreePointSevenEightLitres_WhenAdded_ShouldReturnSevenPointFiveSixLitres() {
+        Quantity<VolumeUnit> gallon = new Quantity<>(1.0, VolumeUnit.GALLON);
+        Quantity<VolumeUnit> litres = new Quantity<>(3.78, VolumeUnit.LITRE);
+        Quantity<VolumeUnit> sum = gallon.add(litres, VolumeUnit.LITRE);
+        Assertions.assertEquals(7.56, sum.getValue(), 0.0001);
+    }
+
+    // UC10: Temperature Measurement Tests
+    @Test
+    public void givenTwoHundredAndTwelveFahrenheitAndHundredCelsius_WhenCompared_ShouldReturnEqual() {
+        Quantity<TemperatureUnit> fahrenheit = new Quantity<>(212.0, TemperatureUnit.FAHRENHEIT);
+        Quantity<TemperatureUnit> celsius = new Quantity<>(100.0, TemperatureUnit.CELSIUS);
+        Assertions.assertEquals(fahrenheit, celsius);
+    }
+    
+    @Test
+    public void givenThirtyTwoFahrenheitAndZeroCelsius_WhenCompared_ShouldReturnEqual() {
+        Quantity<TemperatureUnit> fahrenheit = new Quantity<>(32.0, TemperatureUnit.FAHRENHEIT);
+        Quantity<TemperatureUnit> celsius = new Quantity<>(0.0, TemperatureUnit.CELSIUS);
+        Assertions.assertEquals(fahrenheit, celsius);
     }
 }

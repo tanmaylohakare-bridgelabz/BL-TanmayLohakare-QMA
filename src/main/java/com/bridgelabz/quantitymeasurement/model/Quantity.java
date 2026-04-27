@@ -44,7 +44,11 @@ public class Quantity<T extends Unit> {
             throw new IllegalArgumentException("Cannot add a null quantity or specify a null target unit.");
         }
         
-        if (!this.unit.getClass().equals(other.unit.getClass())) {
+        // UC10: Runtime Cross-Category Type Safety logic for Enums
+        Class<?> thisCategory = this.unit instanceof Enum ? ((Enum<?>) this.unit).getDeclaringClass() : this.unit.getClass();
+        Class<?> otherCategory = other.unit instanceof Enum ? ((Enum<?>) other.unit).getDeclaringClass() : other.unit.getClass();
+        
+        if (!thisCategory.equals(otherCategory)) {
             throw new IllegalArgumentException("Cannot add quantities of different measurement categories.");
         }
 
@@ -59,7 +63,11 @@ public class Quantity<T extends Unit> {
             return false;
         }
 
-        if (!this.unit.getClass().equals(quantity.unit.getClass())) {
+        // UC10: Runtime Cross-Category Type Safety logic for Enums
+        Class<?> thisCategory = this.unit instanceof Enum ? ((Enum<?>) this.unit).getDeclaringClass() : this.unit.getClass();
+        Class<?> otherCategory = quantity.unit instanceof Enum ? ((Enum<?>) quantity.unit).getDeclaringClass() : quantity.unit.getClass();
+        
+        if (!thisCategory.equals(otherCategory)) {
             return false;
         }
 
