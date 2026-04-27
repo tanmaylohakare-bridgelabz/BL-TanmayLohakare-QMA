@@ -39,6 +39,11 @@ public class Quantity<T extends Unit> {
         if (other == null || targetUnit == null) {
             throw new IllegalArgumentException("Cannot perform arithmetic with a null quantity or specify a null target unit.");
         }
+
+        // UC14: Validation at Entry Points for Selective Arithmetic Support
+        if (!this.unit.supportsArithmetic() || !other.getUnit().supportsArithmetic()) {
+            throw new UnsupportedOperationException("Arithmetic operations are not supported for this unit category.");
+        }
         
         // UC10: Runtime Cross-Category Type Safety logic for Enums
         Class<?> thisCategory = this.unit instanceof Enum ? ((Enum<?>) this.unit).getDeclaringClass() : this.unit.getClass();

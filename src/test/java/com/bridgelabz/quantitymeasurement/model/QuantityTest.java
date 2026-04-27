@@ -375,4 +375,32 @@ public class QuantityTest {
             inch.subtract((Quantity) gram);
         });
     }
+
+    // UC14: Selective Arithmetic Support for Temperatures
+    @Test
+    public void givenTwoTemperatures_WhenAdded_ShouldThrowUnsupportedOperationException() {
+        Quantity<TemperatureUnit> fahrenheit = new Quantity<>(212.0, TemperatureUnit.FAHRENHEIT);
+        Quantity<TemperatureUnit> celsius = new Quantity<>(100.0, TemperatureUnit.CELSIUS);
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> {
+            fahrenheit.add(celsius);
+        });
+    }
+
+    @Test
+    public void givenTwoTemperatures_WhenSubtracted_ShouldThrowUnsupportedOperationException() {
+        Quantity<TemperatureUnit> fahrenheit = new Quantity<>(212.0, TemperatureUnit.FAHRENHEIT);
+        Quantity<TemperatureUnit> celsius = new Quantity<>(100.0, TemperatureUnit.CELSIUS);
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> {
+            fahrenheit.subtract(celsius);
+        });
+    }
+
+    @Test
+    public void givenTwoTemperatures_WhenDivided_ShouldThrowUnsupportedOperationException() {
+        Quantity<TemperatureUnit> fahrenheit = new Quantity<>(212.0, TemperatureUnit.FAHRENHEIT);
+        Quantity<TemperatureUnit> celsius = new Quantity<>(100.0, TemperatureUnit.CELSIUS);
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> {
+            fahrenheit.divide(celsius);
+        });
+    }
 }

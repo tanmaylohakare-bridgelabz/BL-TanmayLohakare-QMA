@@ -77,8 +77,10 @@ public class QuantityApplication {
         System.out.println("1 Tonne + 1000 Grams (in Kilogram) = " + sumWeight.getValue() + " " + sumWeight.getUnit());
 
         System.out.println("\n--- UC10 Generic Quantity Class for Multi-Category Support ---");
-        System.out.println("Demonstrating Scalability and Extensibility (Temperatures)");
+        System.out.println("Demonstrating Scalability and Extensibility (Volumes & Temperatures)");
         
+        Quantity<VolumeUnit> demoGallon = new Quantity<>(1.0, VolumeUnit.GALLON);
+
         Quantity<TemperatureUnit> boilingF = new Quantity<>(212.0, TemperatureUnit.FAHRENHEIT);
         Quantity<TemperatureUnit> boilingC = new Quantity<>(100.0, TemperatureUnit.CELSIUS);
         System.out.println("212 Fahrenheit == 100 Celsius : " + boilingF.equals(boilingC));
@@ -90,7 +92,7 @@ public class QuantityApplication {
             
             // Testing runtime type safety by casting
             Quantity rawFoot = foot;
-            rawFoot.add(boilingF);
+            rawFoot.add(demoGallon); // Changed from boilingF to demoGallon to bypass UC14 unsupported math exception and test category validation
         } catch (IllegalArgumentException e) {
             System.out.println("Caught Expected Exception: " + e.getMessage());
         }
@@ -118,6 +120,14 @@ public class QuantityApplication {
             System.out.println("Attempting to divide by zero...");
             fourInches.divide(new Quantity<>(0.0, LengthUnit.INCHES));
         } catch (ArithmeticException e) {
+            System.out.println("Caught Expected Exception: " + e.getMessage());
+        }
+
+        System.out.println("\n--- UC14 Temperature Measurement with Selective Arithmetic Support ---");
+        try {
+            System.out.println("Attempting to add two temperatures...");
+            boilingF.add(boilingC);
+        } catch (UnsupportedOperationException e) {
             System.out.println("Caught Expected Exception: " + e.getMessage());
         }
     }

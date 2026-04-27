@@ -26,4 +26,10 @@ public enum TemperatureUnit implements Unit {
             return baseValue;
         }
     };
+
+    // UC14: Method Overriding for Behavioural Customisation (Selective Arithmetic Support)
+    @Override
+    public boolean supportsArithmetic() {
+        return false;
+    }
 }
