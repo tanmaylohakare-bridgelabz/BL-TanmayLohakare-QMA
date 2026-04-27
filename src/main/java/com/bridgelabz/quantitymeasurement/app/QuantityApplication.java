@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.bridgelabz.quantitymeasurement.model.Quantity;
 import com.bridgelabz.quantitymeasurement.enums.LengthUnit;
+import com.bridgelabz.quantitymeasurement.enums.WeightUnit;
 
 @SpringBootApplication(scanBasePackages = "com.bridgelabz.quantitymeasurement")
 public class QuantityApplication {
@@ -66,5 +67,11 @@ public class QuantityApplication {
 
         Quantity<LengthUnit> sumTargetInches = foot.add(twoInches, LengthUnit.INCHES);
         System.out.println("1 Foot + 2 Inches (in Inches) = " + sumTargetInches.getValue() + " " + sumTargetInches.getUnit());
+
+        System.out.println("\n--- UC9 Weight Addition ---");
+        Quantity<WeightUnit> tonne = new Quantity<>(1.0, WeightUnit.TONNE);
+        Quantity<WeightUnit> grams = new Quantity<>(1000.0, WeightUnit.GRAM);
+        Quantity<WeightUnit> sumWeight = tonne.add(grams, WeightUnit.KILOGRAM);
+        System.out.println("1 Tonne + 1000 Grams (in Kilogram) = " + sumWeight.getValue() + " " + sumWeight.getUnit());
     }
 }

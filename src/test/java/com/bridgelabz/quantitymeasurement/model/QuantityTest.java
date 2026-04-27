@@ -1,6 +1,7 @@
 package com.bridgelabz.quantitymeasurement.model;
 
 import com.bridgelabz.quantitymeasurement.enums.LengthUnit;
+import com.bridgelabz.quantitymeasurement.enums.WeightUnit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -230,6 +231,54 @@ public class QuantityTest {
         Quantity<LengthUnit> other = new Quantity<>(2.0, LengthUnit.INCHES);
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             inches.add(other, null);
+        });
+    }
+
+    // UC9: Weight Measurement Tests
+    @Test
+    public void givenOneGramAndOneGram_WhenCompared_ShouldReturnEqual() {
+        Quantity<WeightUnit> gram1 = new Quantity<>(1.0, WeightUnit.GRAM);
+        Quantity<WeightUnit> gram2 = new Quantity<>(1.0, WeightUnit.GRAM);
+        Assertions.assertTrue(gram1.equals(gram2));
+    }
+
+    @Test
+    public void givenOneKilogramAndThousandGrams_WhenCompared_ShouldReturnEqual() {
+        Quantity<WeightUnit> kilogram = new Quantity<>(1.0, WeightUnit.KILOGRAM);
+        Quantity<WeightUnit> grams = new Quantity<>(1000.0, WeightUnit.GRAM);
+        Assertions.assertTrue(kilogram.equals(grams));
+    }
+
+    @Test
+    public void givenOneTonneAndThousandKilograms_WhenCompared_ShouldReturnEqual() {
+        Quantity<WeightUnit> tonne = new Quantity<>(1.0, WeightUnit.TONNE);
+        Quantity<WeightUnit> kilograms = new Quantity<>(1000.0, WeightUnit.KILOGRAM);
+        Assertions.assertTrue(tonne.equals(kilograms));
+    }
+
+    @Test
+    public void givenOneTonneAndThousandGrams_WhenAdded_ShouldReturnOneThousandAndOneKilograms() {
+        Quantity<WeightUnit> tonne = new Quantity<>(1.0, WeightUnit.TONNE);
+        Quantity<WeightUnit> grams = new Quantity<>(1000.0, WeightUnit.GRAM);
+        Quantity<WeightUnit> sum = tonne.add(grams, WeightUnit.KILOGRAM);
+        Assertions.assertEquals(new Quantity<>(1001.0, WeightUnit.KILOGRAM), sum);
+        Assertions.assertEquals(1001.0, sum.getValue(), 0.0001);
+        Assertions.assertEquals(WeightUnit.KILOGRAM, sum.getUnit());
+    }
+
+    @Test
+    public void givenOneInchAndOneGram_WhenCompared_ShouldReturnFalse() {
+        Quantity<LengthUnit> inch = new Quantity<>(1.0, LengthUnit.INCHES);
+        Quantity<WeightUnit> gram = new Quantity<>(1.0, WeightUnit.GRAM);
+        Assertions.assertFalse(inch.equals((Quantity) gram));
+    }
+
+    @Test
+    public void givenOneInchAndOneGram_WhenAdded_ShouldThrowException() {
+        Quantity<LengthUnit> inch = new Quantity<>(1.0, LengthUnit.INCHES);
+        Quantity<WeightUnit> gram = new Quantity<>(1.0, WeightUnit.GRAM);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            inch.add((Quantity) gram);
         });
     }
 }
