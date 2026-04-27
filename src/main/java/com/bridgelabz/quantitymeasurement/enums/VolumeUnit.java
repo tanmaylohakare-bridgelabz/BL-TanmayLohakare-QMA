@@ -2,7 +2,7 @@ package com.bridgelabz.quantitymeasurement.enums;
 
 import com.bridgelabz.quantitymeasurement.interfaces.Unit;
 
-// UC10: Volume Measurement Support Enum for Scalability
+// UC11: Volume Measurement Support Enum for Scalability
 public enum VolumeUnit implements Unit {
     GALLON(3.78),
     LITRE(1.0),

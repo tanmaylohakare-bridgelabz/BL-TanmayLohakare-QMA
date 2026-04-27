@@ -284,7 +284,7 @@ public class QuantityTest {
         });
     }
 
-    // UC10: Volume Measurement Tests
+    // UC11: Volume Measurement Equality, Conversion, and Addition Tests
     @Test
     public void givenOneGallonAndThreePointSevenEightLitres_WhenCompared_ShouldReturnEqual() {
         Quantity<VolumeUnit> gallon = new Quantity<>(1.0, VolumeUnit.GALLON);
@@ -305,6 +305,15 @@ public class QuantityTest {
         Quantity<VolumeUnit> litres = new Quantity<>(3.78, VolumeUnit.LITRE);
         Quantity<VolumeUnit> sum = gallon.add(litres, VolumeUnit.LITRE);
         Assertions.assertEquals(7.56, sum.getValue(), 0.0001);
+    }
+
+    @Test
+    public void givenOneLitreAndThousandMilliliters_WhenAdded_ShouldReturnTwoLitres() {
+        Quantity<VolumeUnit> litre = new Quantity<>(1.0, VolumeUnit.LITRE);
+        Quantity<VolumeUnit> milliliters = new Quantity<>(1000.0, VolumeUnit.MILLILITER);
+        Quantity<VolumeUnit> sum = litre.add(milliliters, VolumeUnit.LITRE);
+        Assertions.assertEquals(2.0, sum.getValue(), 0.0001);
+        Assertions.assertEquals(VolumeUnit.LITRE, sum.getUnit());
     }
 
     // UC10: Temperature Measurement Tests

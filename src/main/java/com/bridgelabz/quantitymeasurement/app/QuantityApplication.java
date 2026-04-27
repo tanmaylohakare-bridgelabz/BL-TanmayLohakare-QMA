@@ -77,12 +77,8 @@ public class QuantityApplication {
         System.out.println("1 Tonne + 1000 Grams (in Kilogram) = " + sumWeight.getValue() + " " + sumWeight.getUnit());
 
         System.out.println("\n--- UC10 Generic Quantity Class for Multi-Category Support ---");
-        System.out.println("Demonstrating Scalability and Extensibility (Volumes & Temperatures)");
+        System.out.println("Demonstrating Scalability and Extensibility (Temperatures)");
         
-        Quantity<VolumeUnit> gallon = new Quantity<>(1.0, VolumeUnit.GALLON);
-        Quantity<VolumeUnit> litres = new Quantity<>(3.78, VolumeUnit.LITRE);
-        System.out.println("1 Gallon == 3.78 Litres : " + gallon.equals(litres));
-
         Quantity<TemperatureUnit> boilingF = new Quantity<>(212.0, TemperatureUnit.FAHRENHEIT);
         Quantity<TemperatureUnit> boilingC = new Quantity<>(100.0, TemperatureUnit.CELSIUS);
         System.out.println("212 Fahrenheit == 100 Celsius : " + boilingF.equals(boilingC));
@@ -94,9 +90,18 @@ public class QuantityApplication {
             
             // Testing runtime type safety by casting
             Quantity rawFoot = foot;
-            rawFoot.add(gallon);
+            rawFoot.add(boilingF);
         } catch (IllegalArgumentException e) {
             System.out.println("Caught Expected Exception: " + e.getMessage());
         }
+
+        System.out.println("\n--- UC11 Volume Measurement Equality, Conversion, and Addition ---");
+        Quantity<VolumeUnit> gallon = new Quantity<>(1.0, VolumeUnit.GALLON);
+        Quantity<VolumeUnit> litres = new Quantity<>(3.78, VolumeUnit.LITRE);
+        System.out.println("1 Gallon == 3.78 Litres : " + gallon.equals(litres));
+        
+        Quantity<VolumeUnit> ml = new Quantity<>(1000.0, VolumeUnit.MILLILITER);
+        Quantity<VolumeUnit> sumVolume = litres.add(ml, VolumeUnit.LITRE);
+        System.out.println("3.78 Litres + 1000 ml = " + sumVolume.getValue() + " " + sumVolume.getUnit());
     }
 }
