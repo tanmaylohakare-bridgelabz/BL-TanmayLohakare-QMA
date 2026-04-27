@@ -1,6 +1,7 @@
 package com.bridgelabz.quantitymeasurement.model;
 
 import com.bridgelabz.quantitymeasurement.interfaces.Unit;
+import com.bridgelabz.quantitymeasurement.enums.ArithmeticOperation;
 import java.util.Objects;
 
 public class Quantity<T extends Unit> {
@@ -48,26 +49,29 @@ public class Quantity<T extends Unit> {
         }
     }
 
-    // UC6 & UC7: Addition of Two Units (Overloaded)
+    // UC13: Centralized Arithmetic Logic to Enforce DRY
+    private Quantity<T> performOperation(Quantity<T> other, T targetUnit, ArithmeticOperation operation) {
+        this.validateArithmeticOperation(other, targetUnit);
+        double resultBaseValue = operation.apply(this.getBaseValue(), other.getBaseValue());
+        return new Quantity<>(targetUnit.convertFromBaseUnit(resultBaseValue), targetUnit);
+    }
+
     public Quantity<T> add(Quantity<T> other) {
         return this.add(other, this.unit);
     }
 
     public Quantity<T> add(Quantity<T> other, T targetUnit) {
-        this.validateArithmeticOperation(other, targetUnit);
-        double totalBaseValue = this.getBaseValue() + other.getBaseValue();
-        return new Quantity<>(targetUnit.convertFromBaseUnit(totalBaseValue), targetUnit);
+        // UC13: Dispatched to centralized logic
+        return performOperation(other, targetUnit, ArithmeticOperation.ADD);
     }
 
-    // UC12: Subtraction and Division Operations
     public Quantity<T> subtract(Quantity<T> other) {
         return this.subtract(other, this.unit);
     }
 
     public Quantity<T> subtract(Quantity<T> other, T targetUnit) {
-        this.validateArithmeticOperation(other, targetUnit);
-        double differenceBaseValue = this.getBaseValue() - other.getBaseValue();
-        return new Quantity<>(targetUnit.convertFromBaseUnit(differenceBaseValue), targetUnit);
+        // UC13: Dispatched to centralized logic
+        return performOperation(other, targetUnit, ArithmeticOperation.SUBTRACT);
     }
 
     public Quantity<T> divide(Quantity<T> other) {
@@ -75,12 +79,8 @@ public class Quantity<T extends Unit> {
     }
 
     public Quantity<T> divide(Quantity<T> other, T targetUnit) {
-        this.validateArithmeticOperation(other, targetUnit);
-        if (Math.abs(other.getBaseValue()) < DIFFERENCE) {
-            throw new ArithmeticException("Cannot divide by zero quantity.");
-        }
-        double quotientBaseValue = this.getBaseValue() / other.getBaseValue();
-        return new Quantity<>(targetUnit.convertFromBaseUnit(quotientBaseValue), targetUnit);
+        // UC13: Dispatched to centralized logic
+        return performOperation(other, targetUnit, ArithmeticOperation.DIVIDE);
     }
 
     public boolean equals(Quantity<T> quantity) {
