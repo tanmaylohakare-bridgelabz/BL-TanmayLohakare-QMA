@@ -7,11 +7,12 @@ import com.bridgelabz.quantitymeasurement.enums.VolumeUnit;
 import com.bridgelabz.quantitymeasurement.enums.WeightUnit;
 import com.bridgelabz.quantitymeasurement.interfaces.Unit;
 import com.bridgelabz.quantitymeasurement.model.Quantity;
-import org.springframework.stereotype.Service;
 
 // UC15: Service Layer enforcing Single Responsibility Principle (SRP)
-@Service
 public class QuantityService implements IQuantityService {
+
+    public QuantityService() {
+    }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private Unit getUnitEnum(String category, String unitStr) {
@@ -62,8 +63,8 @@ public class QuantityService implements IQuantityService {
         Quantity q1 = new Quantity<>(requestDTO.getValue1(), unit1);
         Quantity q2 = new Quantity<>(requestDTO.getValue2(), unit2);
         
-        Quantity result = q1.add(q2, targetUnitEnum);
-        return result.getValue();
+        Quantity res = q1.add(q2, targetUnitEnum);
+        return res.getValue();
     }
 
     @Override
@@ -76,7 +77,7 @@ public class QuantityService implements IQuantityService {
         Quantity q1 = new Quantity<>(requestDTO.getValue1(), unit1);
         Quantity q2 = new Quantity<>(requestDTO.getValue2(), unit2);
         
-        Quantity result = q1.subtract(q2, targetUnitEnum);
-        return result.getValue();
+        Quantity res = q1.subtract(q2, targetUnitEnum);
+        return res.getValue();
     }
 }
