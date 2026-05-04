@@ -7,11 +7,18 @@ import com.bridgelabz.quantitymeasurement.enums.VolumeUnit;
 import com.bridgelabz.quantitymeasurement.enums.WeightUnit;
 import com.bridgelabz.quantitymeasurement.interfaces.Unit;
 import com.bridgelabz.quantitymeasurement.model.Quantity;
+import com.bridgelabz.quantitymeasurement.model.QuantityRecord;
+import com.bridgelabz.quantitymeasurement.repository.IQuantityRepository;
 
 // UC15: Service Layer enforcing Single Responsibility Principle (SRP)
+// UC16: Layer Integration with Database Persistence
 public class QuantityService implements IQuantityService {
 
-    public QuantityService() {
+    private final IQuantityRepository repository;
+
+    // Dependency Injection
+    public QuantityService(IQuantityRepository repository) {
+        this.repository = repository;
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -38,7 +45,16 @@ public class QuantityService implements IQuantityService {
         
         Quantity quantity = new Quantity<>(requestDTO.getValue1(), sourceUnit);
         Quantity converted = quantity.convertTo(targetUnitEnum);
-        return converted.getValue();
+        double result = converted.getValue();
+        
+        // UC16: Persist
+        if (repository != null) {
+            repository.save(new QuantityRecord(
+                "CONVERT", requestDTO.getValue1(), requestDTO.getUnit1(), null, null, requestDTO.getTargetUnit(), result
+            ));
+        }
+        
+        return result;
     }
 
     @Override
@@ -50,7 +66,16 @@ public class QuantityService implements IQuantityService {
         Quantity q1 = new Quantity<>(requestDTO.getValue1(), unit1);
         Quantity q2 = new Quantity<>(requestDTO.getValue2(), unit2);
         
-        return q1.equals(q2) ? 1.0 : 0.0;
+        double result = q1.equals(q2) ? 1.0 : 0.0;
+        
+        // UC16: Persist
+        if (repository != null) {
+            repository.save(new QuantityRecord(
+                "COMPARE", requestDTO.getValue1(), requestDTO.getUnit1(), requestDTO.getValue2(), requestDTO.getUnit2(), null, result
+            ));
+        }
+        
+        return result;
     }
 
     @Override
@@ -64,7 +89,16 @@ public class QuantityService implements IQuantityService {
         Quantity q2 = new Quantity<>(requestDTO.getValue2(), unit2);
         
         Quantity res = q1.add(q2, targetUnitEnum);
-        return res.getValue();
+        double result = res.getValue();
+        
+        // UC16: Persist
+        if (repository != null) {
+            repository.save(new QuantityRecord(
+                "ADD", requestDTO.getValue1(), requestDTO.getUnit1(), requestDTO.getValue2(), requestDTO.getUnit2(), requestDTO.getTargetUnit(), result
+            ));
+        }
+        
+        return result;
     }
 
     @Override
@@ -78,6 +112,15 @@ public class QuantityService implements IQuantityService {
         Quantity q2 = new Quantity<>(requestDTO.getValue2(), unit2);
         
         Quantity res = q1.subtract(q2, targetUnitEnum);
-        return res.getValue();
+        double result = res.getValue();
+        
+        // UC16: Persist
+        if (repository != null) {
+            repository.save(new QuantityRecord(
+                "SUBTRACT", requestDTO.getValue1(), requestDTO.getUnit1(), requestDTO.getValue2(), requestDTO.getUnit2(), requestDTO.getTargetUnit(), result
+            ));
+        }
+        
+        return result;
     }
 }

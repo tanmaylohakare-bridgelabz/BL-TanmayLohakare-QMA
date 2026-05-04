@@ -1,23 +1,30 @@
 package com.bridgelabz.quantitymeasurement.app;
 
+import com.bridgelabz.quantitymeasurement.config.DatabaseConfig;
 import com.bridgelabz.quantitymeasurement.controller.QuantityController;
 import com.bridgelabz.quantitymeasurement.dto.QuantityRequestDTO;
 import com.bridgelabz.quantitymeasurement.dto.ResponseDTO;
+import com.bridgelabz.quantitymeasurement.repository.IQuantityRepository;
+import com.bridgelabz.quantitymeasurement.repository.QuantityRepositoryImpl;
 import com.bridgelabz.quantitymeasurement.service.IQuantityService;
 import com.bridgelabz.quantitymeasurement.service.QuantityService;
 
 // UC15: N-Tier Architecture Refactoring
+// UC16: Database Integration with JDBC (HikariCP Pool)
 public class QuantityApplication {
 
     public static void main(String[] args) {
-        System.out.println("--- UC15: N-Tier Architecture Initialization ---");
+        System.out.println("--- UC15 & UC16: N-Tier Architecture & Database Initialization ---");
         
-        // 1. Dependency Injection Pattern (Manual wiring for now, Spring DI in UC17)
-        IQuantityService quantityService = new QuantityService();
+        // Setup Repository (Database Connection & Schema)
+        IQuantityRepository quantityRepository = new QuantityRepositoryImpl();
+        
+        // 1. Dependency Injection Pattern (Manual wiring)
+        IQuantityService quantityService = new QuantityService(quantityRepository);
         QuantityController quantityController = new QuantityController(quantityService);
         
-        System.out.println("N-Tier Components Initialized Successfully.");
-        System.out.println("\n--- Testing N-Tier Controller (Plain Java) ---");
+        System.out.println("N-Tier Components & Database Initialized Successfully.");
+        System.out.println("\n--- Testing N-Tier Controller (Operations will be persisted to DB) ---");
 
         // Test 1: Compare 1 Foot and 12 Inches
         QuantityRequestDTO compareRequest = new QuantityRequestDTO();
@@ -52,6 +59,10 @@ public class QuantityApplication {
         ResponseDTO convertResponse = quantityController.convertQuantity(convertRequest);
         System.out.println("Convert 1 Gallon to Litres: " + convertResponse.getMessage() + " | Result: " + convertResponse.getData() + " Litres");
 
-        System.out.println("\nUC15 Refactoring Complete. Architecture is decoupled and ready for UC16 (JDBC) and UC17 (Spring Backend).");
+        System.out.println("\nUC16 Refactoring Complete. Records persisted to database via HikariCP.");
+        
+        // Clean up resources
+        DatabaseConfig.closePool();
+        System.out.println("Database connection pool closed successfully.");
     }
 }
