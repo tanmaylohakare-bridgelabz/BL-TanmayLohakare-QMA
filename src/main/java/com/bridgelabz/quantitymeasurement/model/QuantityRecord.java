@@ -1,17 +1,32 @@
 package com.bridgelabz.quantitymeasurement.model;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import org.hibernate.annotations.CreationTimestamp;
 
-// UC16: Model for Database Record
+// UC17: Model for Database Record with Spring JPA
+@Entity
+@Table(name = "quantity_records")
 public class QuantityRecord {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    @Column(name = "operation_type")
     private String operationType;
+    
     private Double value1;
     private String unit1;
     private Double value2;
     private String unit2;
+    
+    @Column(name = "target_unit")
     private String targetUnit;
+    
     private Double result;
+    
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     public QuantityRecord() {}

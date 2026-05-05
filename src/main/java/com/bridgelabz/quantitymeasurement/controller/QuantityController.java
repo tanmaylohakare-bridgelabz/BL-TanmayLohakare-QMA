@@ -3,34 +3,44 @@ package com.bridgelabz.quantitymeasurement.controller;
 import com.bridgelabz.quantitymeasurement.dto.QuantityRequestDTO;
 import com.bridgelabz.quantitymeasurement.dto.ResponseDTO;
 import com.bridgelabz.quantitymeasurement.service.IQuantityService;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
-// UC15: Controller Layer enforcing N-Tier Architecture (Plain Java)
+// UC15: Controller Layer enforcing N-Tier Architecture
+// UC17: Spring REST API Controller
+@RestController
+@RequestMapping("/api/quantity")
 public class QuantityController {
 
     private final IQuantityService quantityService;
 
     // Dependency Injection Pattern (Constructor Injection)
+    @Autowired
     public QuantityController(IQuantityService quantityService) {
         this.quantityService = quantityService;
     }
 
-    public ResponseDTO convertQuantity(QuantityRequestDTO requestDTO) {
+    @PostMapping("/convert")
+    public ResponseDTO convertQuantity(@RequestBody QuantityRequestDTO requestDTO) {
         double result = quantityService.convertQuantity(requestDTO);
         return new ResponseDTO("Converted Successfully", result);
     }
 
-    public ResponseDTO compareQuantities(QuantityRequestDTO requestDTO) {
+    @PostMapping("/compare")
+    public ResponseDTO compareQuantities(@RequestBody QuantityRequestDTO requestDTO) {
         double result = quantityService.compareQuantities(requestDTO);
         boolean isEqual = (result == 1.0);
         return new ResponseDTO("Compared Successfully", isEqual);
     }
 
-    public ResponseDTO addQuantities(QuantityRequestDTO requestDTO) {
+    @PostMapping("/add")
+    public ResponseDTO addQuantities(@RequestBody QuantityRequestDTO requestDTO) {
         double result = quantityService.addQuantities(requestDTO);
         return new ResponseDTO("Added Successfully", result);
     }
 
-    public ResponseDTO subtractQuantities(QuantityRequestDTO requestDTO) {
+    @PostMapping("/subtract")
+    public ResponseDTO subtractQuantities(@RequestBody QuantityRequestDTO requestDTO) {
         double result = quantityService.subtractQuantities(requestDTO);
         return new ResponseDTO("Subtracted Successfully", result);
     }
