@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantity Measurement System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <!-- Dynamic Background -->
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+    <div class="bg-shape shape-3"></div>
+
+    <div class="container">
+        <!-- Authentication Section (Shown when no token) -->
+        <section id="auth-section" class="glass-card active">
+            <h1>Quantity Measurement</h1>
+            <p>Welcome! Please authenticate to start measuring and calculating quantities securely.</p>
+            <a href="http://localhost:8080/oauth2/authorization/google" class="btn primary-btn">
+                <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
+                        <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
+                        <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.369 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
+                        <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
+                        <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.109 -17.884 43.989 -14.754 43.989 Z"/>
+                    </g>
+                </svg>
+                Sign in with Google
+            </a>
+        </section>
+
+        <!-- Main Dashboard (Shown when authenticated) -->
+        <section id="app-section" class="glass-card hidden">
+            <div class="header">
+                <h1>Quantify</h1>
+                <button id="logout-btn" class="btn secondary-btn">Log Out</button>
+            </div>
+
+            <nav class="tabs">
+                <button class="tab active" data-target="convert">Convert</button>
+                <button class="tab" data-target="compare">Compare</button>
+                <button class="tab" data-target="add">Add</button>
+                <button class="tab" data-target="subtract">Subtract</button>
+            </nav>
+
+            <div class="category-selector">
+                <label for="category">Measurement Category:</label>
+                <select id="category" class="glass-input">
+                    <option value="LENGTH">Length</option>
+                    <option value="VOLUME">Volume</option>
+                    <option value="WEIGHT">Weight</option>
+                    <option value="TEMPERATURE">Temperature</option>
+                </select>
+            </div>
+
+            <!-- Forms Container -->
+            <div class="forms-wrapper">
+                
+                <!-- Convert Form -->
+                <form id="convert-form" class="app-form active">
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Value</label>
+                            <input type="number" step="any" id="conv-val" class="glass-input" required>
+                        </div>
+                        <div class="input-group">
+                            <label>From Unit</label>
+                            <select id="conv-unit1" class="glass-input unit-select"></select>
+                        </div>
+                        <div class="input-group">
+                            <label>To Unit</label>
+                            <select id="conv-unit2" class="glass-input unit-select"></select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn primary-btn submit-btn">Convert</button>
+                </form>
+
+                <!-- Compare Form -->
+                <form id="compare-form" class="app-form hidden">
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Value 1</label>
+                            <input type="number" step="any" id="comp-val1" class="glass-input" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Unit 1</label>
+                            <select id="comp-unit1" class="glass-input unit-select"></select>
+                        </div>
+                    </div>
+                    <div class="divider">VS</div>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Value 2</label>
+                            <input type="number" step="any" id="comp-val2" class="glass-input" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Unit 2</label>
+                            <select id="comp-unit2" class="glass-input unit-select"></select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn primary-btn submit-btn">Compare</button>
+                </form>
+
+                <!-- Add/Subtract Form (Shared Structure) -->
+                <form id="math-form" class="app-form hidden">
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Value 1</label>
+                            <input type="number" step="any" id="math-val1" class="glass-input" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Unit 1</label>
+                            <select id="math-unit1" class="glass-input unit-select"></select>
+                        </div>
+                    </div>
+                    <div class="divider" id="math-operator">+</div>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Value 2</label>
+                            <input type="number" step="any" id="math-val2" class="glass-input" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Unit 2</label>
+                            <select id="math-unit2" class="glass-input unit-select"></select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="input-group full-width">
+                            <label>Result Unit</label>
+                            <select id="math-target" class="glass-input unit-select"></select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn primary-btn submit-btn" id="math-submit-btn">Calculate</button>
+                </form>
+            </div>
+
+            <!-- Result Display -->
+            <div id="result-box" class="result-box hidden">
+                <div class="loader hidden"></div>
+                <h2 id="result-text"></h2>
+            </div>
+        </section>
+    </div>
+
+    <!-- JS Logic -->
+    <script src="/js/app.js"></script>
+</body>
+</html>

@@ -43,7 +43,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
         // Redirect to a frontend page with the token as a query parameter
         // Adjust the redirection URL to match your frontend setup
-        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/oauth2/redirect")
+        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/")
                 .queryParam("token", token)
                 .build().toUriString();
 
