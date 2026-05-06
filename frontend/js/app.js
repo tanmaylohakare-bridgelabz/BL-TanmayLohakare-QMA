@@ -1,6 +1,4 @@
-// UC19: ES9 Features, Async/Await, AJAX, DOM Manipulation, Conditional Logic
-
-// Define Unit Mapping
+// Unit Mapping matching backend Enums
 const categoryUnits = {
     LENGTH: ['INCHES', 'FEET', 'YARD', 'CENTIMETER'],
     VOLUME: ['GALLON', 'LITRE', 'MILLILITER'],
@@ -8,125 +6,180 @@ const categoryUnits = {
     TEMPERATURE: ['FAHRENHEIT', 'CELSIUS']
 };
 
-// State variables
 let currentToken = null;
-let currentMode = 'convert';
+let currentCategory = 'LENGTH';
+let currentAction = 'convert'; // convert, compare, add, subtract
 
 // DOM Elements
 const authSection = document.getElementById('auth-section');
 const appSection = document.getElementById('app-section');
 const logoutBtn = document.getElementById('logout-btn');
-const categorySelect = document.getElementById('category');
-const tabs = document.querySelectorAll('.tab');
-const forms = document.querySelectorAll('.app-form');
-const unitSelects = document.querySelectorAll('.unit-select');
-const resultBox = document.getElementById('result-box');
-const resultText = document.getElementById('result-text');
-const loader = document.querySelector('.loader');
 
-// Authentication Handling
+const catCards = document.querySelectorAll('.cat-card');
+const actionTabs = document.querySelectorAll('.action-tab');
+
+const val1Input = document.getElementById('val1');
+const unit1Select = document.getElementById('unit1');
+const val2Block = document.getElementById('val2-block');
+const val2Input = document.getElementById('val2');
+const unit2Select = document.getElementById('unit2');
+const opBlock = document.getElementById('operator-block');
+const opToggle = document.getElementById('operator-toggle');
+
+const resultVal = document.getElementById('result-val');
+const targetUnitSelect = document.getElementById('target-unit');
+
+// Authentication
 const checkAuth = () => {
-    // Check URL for token (after Google Redirect)
     const urlParams = new URLSearchParams(window.location.search);
     const tokenFromUrl = urlParams.get('token');
 
     if (tokenFromUrl) {
         localStorage.setItem('jwt_token', tokenFromUrl);
-        // Clean URL
         window.history.replaceState({}, document.title, window.location.pathname);
     }
 
     currentToken = localStorage.getItem('jwt_token');
 
     if (currentToken) {
-        authSection.classList.remove('active');
+        authSection.classList.add('hidden');
         appSection.classList.remove('hidden');
-        appSection.classList.add('active');
-        populateUnits();
+        logoutBtn.classList.remove('hidden');
+        initUI();
     } else {
-        appSection.classList.remove('active');
+        authSection.classList.remove('hidden');
         appSection.classList.add('hidden');
-        authSection.classList.add('active');
+        logoutBtn.classList.add('hidden');
     }
 };
 
-const handleLogout = () => {
+logoutBtn.addEventListener('click', () => {
     localStorage.removeItem('jwt_token');
     currentToken = null;
     checkAuth();
+});
+
+// UI Initialization
+const initUI = () => {
+    populateDropdowns();
+    updateLayout();
+    calculate();
 };
 
-logoutBtn.addEventListener('click', handleLogout);
-
-// UI Logic
-const populateUnits = () => {
-    const selectedCategory = categorySelect.value;
-    const units = categoryUnits[selectedCategory];
+const populateDropdowns = () => {
+    const units = categoryUnits[currentCategory];
     
-    unitSelects.forEach(select => {
-        select.innerHTML = '';
-        units.forEach(unit => {
-            const option = document.createElement('option');
-            option.value = unit;
-            option.textContent = unit.charAt(0) + unit.slice(1).toLowerCase();
-            select.appendChild(option);
-        });
-    });
-};
+    // Helper to format string
+    const formatStr = str => str.charAt(0) + str.slice(1).toLowerCase();
 
-categorySelect.addEventListener('change', () => {
-    populateUnits();
-    hideResult();
-});
+    const options = units.map(u => `<option value="${u}">${formatStr(u)}</option>`).join('');
+    
+    unit1Select.innerHTML = options;
+    unit2Select.innerHTML = options;
+    targetUnitSelect.innerHTML = options;
 
-// Tab Switching
-tabs.forEach(tab => {
-    tab.addEventListener('click', (e) => {
-        // Update active tab styling
-        tabs.forEach(t => t.classList.remove('active'));
-        e.target.classList.add('active');
-
-        // Show corresponding form
-        currentMode = e.target.getAttribute('data-target');
-        forms.forEach(f => f.classList.remove('active'));
-        
-        let targetForm;
-        if (currentMode === 'convert') targetForm = document.getElementById('convert-form');
-        else if (currentMode === 'compare') targetForm = document.getElementById('compare-form');
-        else {
-            targetForm = document.getElementById('math-form');
-            document.getElementById('math-operator').textContent = currentMode === 'add' ? '+' : '-';
-        }
-        targetForm.classList.add('active');
-        hideResult();
-    });
-});
-
-const showResult = (text, isError = false) => {
-    loader.classList.add('hidden');
-    resultText.classList.remove('hidden');
-    resultBox.classList.remove('hidden');
-    resultText.textContent = text;
-    if (isError) {
-        resultBox.classList.add('error');
-    } else {
-        resultBox.classList.remove('error');
+    if (units.length > 1) {
+        // Set some default different units
+        unit2Select.selectedIndex = 1;
+        targetUnitSelect.selectedIndex = 1;
     }
 };
 
-const hideResult = () => {
-    resultBox.classList.add('hidden');
+// Event Listeners for UI Selection
+catCards.forEach(card => {
+    card.addEventListener('click', () => {
+        catCards.forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        currentCategory = card.getAttribute('data-cat');
+        
+        // Reset action to convert if temperature is selected (no arithmetic supported)
+        if (currentCategory === 'TEMPERATURE' && (currentAction === 'add' || currentAction === 'subtract')) {
+            document.querySelector('[data-action="convert"]').click();
+        }
+
+        populateDropdowns();
+        calculate();
+    });
+});
+
+actionTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        const action = tab.getAttribute('data-action');
+        
+        // Prevent arithmetic for temperature
+        if (currentCategory === 'TEMPERATURE' && (action === 'add' || action === 'subtract')) {
+            alert("Arithmetic operations are not supported for Temperature.");
+            return;
+        }
+
+        actionTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentAction = action;
+        updateLayout();
+        calculate();
+    });
+});
+
+opToggle.addEventListener('click', () => {
+    if (currentAction === 'add') {
+        currentAction = 'subtract';
+        opToggle.textContent = '-';
+    } else if (currentAction === 'subtract') {
+        currentAction = 'add';
+        opToggle.textContent = '+';
+    }
+    // Update active tab manually if they toggle via operator
+    actionTabs.forEach(t => t.classList.remove('active'));
+    document.querySelector(`[data-action="${currentAction === 'add' ? 'add' : 'subtract'}"]`)?.classList.add('active');
+    calculate();
+});
+
+// Layout Manager
+const updateLayout = () => {
+    if (currentAction === 'convert') {
+        val2Block.classList.add('hidden');
+        opBlock.classList.add('hidden');
+        targetUnitSelect.classList.remove('hidden');
+    } else if (currentAction === 'compare') {
+        val2Block.classList.remove('hidden');
+        opBlock.classList.add('hidden');
+        targetUnitSelect.classList.add('hidden');
+    } else { // add or subtract
+        val2Block.classList.remove('hidden');
+        opBlock.classList.remove('hidden');
+        targetUnitSelect.classList.remove('hidden');
+        opToggle.textContent = currentAction === 'add' ? '+' : '-';
+    }
 };
 
-const showLoader = () => {
-    resultBox.classList.remove('hidden');
-    resultBox.classList.remove('error');
-    resultText.classList.add('hidden');
-    loader.classList.remove('hidden');
-};
+// Auto Calculate triggers
+[val1Input, val2Input, unit1Select, unit2Select, targetUnitSelect].forEach(el => {
+    el.addEventListener('input', calculate);
+});
 
-// API Handling with Promises & Async/Await
-const apiCall = async (endpoint, payload) => {
+// API Caller
+async function calculate() {
+    if (!currentToken) return;
+
+    let endpoint = currentAction;
+    let payload = {
+        category: currentCategory,
+        value1: parseFloat(val1Input.value || 0),
+        unit1: unit1Select.value
+    };
+
+    if (currentAction === 'convert') {
+        payload.targetUnit = targetUnitSelect.value;
+    } else if (currentAction === 'compare') {
+        payload.value2 = parseFloat(val2Input.value || 0);
+        payload.unit2 = unit2Select.value;
+    } else {
+        // add or subtract
+        payload.value2 = parseFloat(val2Input.value || 0);
+        payload.unit2 = unit2Select.value;
+        payload.targetUnit = targetUnitSelect.value;
+    }
+
     try {
         const response = await fetch(`http://localhost:8080/api/quantity/${endpoint}`, {
             method: 'POST',
@@ -138,84 +191,27 @@ const apiCall = async (endpoint, payload) => {
         });
 
         if (response.status === 401 || response.status === 403) {
-            handleLogout();
-            throw new Error('Session expired. Please log in again.');
+            logoutBtn.click();
+            return;
         }
 
         const data = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(data.message || 'An error occurred during calculation.');
+        if (!response.ok) throw new Error(data.message || "Error");
+
+        const card = document.querySelector('.result-card');
+        card.classList.remove('error');
+
+        if (currentAction === 'compare') {
+            resultVal.textContent = data.data === true ? "Equal" : "Not Equal";
+        } else {
+            resultVal.textContent = parseFloat(data.data).toFixed(3);
         }
 
-        return data;
-    } catch (error) {
-        throw error;
-    }
-};
-
-// Form Submissions
-document.getElementById('convert-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    showLoader();
-    
-    const payload = {
-        category: categorySelect.value,
-        value1: parseFloat(document.getElementById('conv-val').value),
-        unit1: document.getElementById('conv-unit1').value,
-        targetUnit: document.getElementById('conv-unit2').value
-    };
-
-    try {
-        const res = await apiCall('convert', payload);
-        showResult(`${payload.value1} ${payload.unit1} = ${res.data.toFixed(4)} ${payload.targetUnit}`);
     } catch (err) {
-        showResult(err.message, true);
+        const card = document.querySelector('.result-card');
+        card.classList.add('error');
+        resultVal.textContent = "Error";
     }
-});
+}
 
-document.getElementById('compare-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    showLoader();
-    
-    const payload = {
-        category: categorySelect.value,
-        value1: parseFloat(document.getElementById('comp-val1').value),
-        unit1: document.getElementById('comp-unit1').value,
-        value2: parseFloat(document.getElementById('comp-val2').value),
-        unit2: document.getElementById('comp-unit2').value
-    };
-
-    try {
-        const res = await apiCall('compare', payload);
-        const isEqual = res.data === true;
-        showResult(isEqual ? 'Equal' : 'Not Equal');
-    } catch (err) {
-        showResult(err.message, true);
-    }
-});
-
-document.getElementById('math-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    showLoader();
-    
-    const payload = {
-        category: categorySelect.value,
-        value1: parseFloat(document.getElementById('math-val1').value),
-        unit1: document.getElementById('math-unit1').value,
-        value2: parseFloat(document.getElementById('math-val2').value),
-        unit2: document.getElementById('math-unit2').value,
-        targetUnit: document.getElementById('math-target').value
-    };
-
-    try {
-        const res = await apiCall(currentMode, payload);
-        const operator = currentMode === 'add' ? '+' : '-';
-        showResult(`${payload.value1} ${payload.unit1} ${operator} ${payload.value2} ${payload.unit2} = ${res.data.toFixed(4)} ${payload.targetUnit}`);
-    } catch (err) {
-        showResult(err.message, true);
-    }
-});
-
-// Initialize
 document.addEventListener('DOMContentLoaded', checkAuth);

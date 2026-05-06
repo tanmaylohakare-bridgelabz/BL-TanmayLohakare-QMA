@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantity Measurement System</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>Quantity Measurement</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
+    <!-- Top Banner -->
+    <header class="top-banner">
+        <h1>Welcome To Quantity Measurement</h1>
+        <button id="logout-btn" class="logout-btn hidden">Log Out</button>
+    </header>
 
-    <!-- Dynamic Background -->
-    <div class="bg-shape shape-1"></div>
-    <div class="bg-shape shape-2"></div>
-    <div class="bg-shape shape-3"></div>
-
-    <div class="container">
-        <!-- Authentication Section (Shown when no token) -->
-        <section id="auth-section" class="glass-card active">
-            <h1>Quantity Measurement</h1>
-            <p>Welcome! Please authenticate to start measuring and calculating quantities securely.</p>
-            <a href="http://localhost:8080/oauth2/authorization/google" class="btn primary-btn">
-                <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+    <div class="main-container">
+        <!-- Auth Section -->
+        <section id="auth-section" class="auth-box">
+            <h2>Sign In Required</h2>
+            <p>Please sign in with your Google account to use the tool.</p>
+            <a href="http://localhost:8080/oauth2/authorization/google" class="btn google-btn">
+                <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
                     <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
                         <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
                         <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.369 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
@@ -32,120 +32,76 @@
             </a>
         </section>
 
-        <!-- Main Dashboard (Shown when authenticated) -->
-        <section id="app-section" class="glass-card hidden">
-            <div class="header">
-                <h1>Quantify</h1>
-                <button id="logout-btn" class="btn secondary-btn">Log Out</button>
+        <!-- App Section -->
+        <section id="app-section" class="hidden">
+            
+            <div class="section-title">CHOOSE TYPE</div>
+            <div class="category-cards">
+                <div class="card cat-card active" data-cat="LENGTH">
+                    <div class="icon length-icon">📐</div>
+                    <span>Length</span>
+                </div>
+                <div class="card cat-card" data-cat="WEIGHT">
+                    <div class="icon weight-icon">⚖️</div>
+                    <span>Weight</span>
+                </div>
+                <div class="card cat-card" data-cat="TEMPERATURE">
+                    <div class="icon temp-icon">🌡️</div>
+                    <span>Temperature</span>
+                </div>
+                <div class="card cat-card" data-cat="VOLUME">
+                    <div class="icon vol-icon">🥛</div>
+                    <span>Volume</span>
+                </div>
             </div>
 
-            <nav class="tabs">
-                <button class="tab active" data-target="convert">Convert</button>
-                <button class="tab" data-target="compare">Compare</button>
-                <button class="tab" data-target="add">Add</button>
-                <button class="tab" data-target="subtract">Subtract</button>
-            </nav>
-
-            <div class="category-selector">
-                <label for="category">Measurement Category:</label>
-                <select id="category" class="glass-input">
-                    <option value="LENGTH">Length</option>
-                    <option value="VOLUME">Volume</option>
-                    <option value="WEIGHT">Weight</option>
-                    <option value="TEMPERATURE">Temperature</option>
-                </select>
+            <div class="section-title">CHOOSE ACTION</div>
+            <div class="action-tabs">
+                <button class="action-tab" data-action="compare">Comparison</button>
+                <button class="action-tab active" data-action="convert">Conversion</button>
+                <button class="action-tab" data-action="add">Arithmetic</button>
             </div>
 
-            <!-- Forms Container -->
-            <div class="forms-wrapper">
+            <!-- Main Input Area -->
+            <div class="calculation-area">
                 
-                <!-- Convert Form -->
-                <form id="convert-form" class="app-form active">
-                    <div class="form-row">
-                        <div class="input-group">
-                            <label>Value</label>
-                            <input type="number" step="any" id="conv-val" class="glass-input" required>
-                        </div>
-                        <div class="input-group">
-                            <label>From Unit</label>
-                            <select id="conv-unit1" class="glass-input unit-select"></select>
-                        </div>
-                        <div class="input-group">
-                            <label>To Unit</label>
-                            <select id="conv-unit2" class="glass-input unit-select"></select>
-                        </div>
+                <!-- Value 1 -->
+                <div class="input-block">
+                    <label class="val-label">VALUE 1</label>
+                    <div class="card input-card">
+                        <input type="number" id="val1" value="1" step="any">
+                        <select id="unit1" class="unit-dropdown"></select>
                     </div>
-                    <button type="submit" class="btn primary-btn submit-btn">Convert</button>
-                </form>
+                </div>
 
-                <!-- Compare Form -->
-                <form id="compare-form" class="app-form hidden">
-                    <div class="form-row">
-                        <div class="input-group">
-                            <label>Value 1</label>
-                            <input type="number" step="any" id="comp-val1" class="glass-input" required>
-                        </div>
-                        <div class="input-group">
-                            <label>Unit 1</label>
-                            <select id="comp-unit1" class="glass-input unit-select"></select>
-                        </div>
-                    </div>
-                    <div class="divider">VS</div>
-                    <div class="form-row">
-                        <div class="input-group">
-                            <label>Value 2</label>
-                            <input type="number" step="any" id="comp-val2" class="glass-input" required>
-                        </div>
-                        <div class="input-group">
-                            <label>Unit 2</label>
-                            <select id="comp-unit2" class="glass-input unit-select"></select>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn primary-btn submit-btn">Compare</button>
-                </form>
+                <!-- Operator (Hidden for Conversion) -->
+                <div id="operator-block" class="operator-block hidden">
+                    <div class="card op-card" id="operator-toggle">+</div>
+                </div>
 
-                <!-- Add/Subtract Form (Shared Structure) -->
-                <form id="math-form" class="app-form hidden">
-                    <div class="form-row">
-                        <div class="input-group">
-                            <label>Value 1</label>
-                            <input type="number" step="any" id="math-val1" class="glass-input" required>
-                        </div>
-                        <div class="input-group">
-                            <label>Unit 1</label>
-                            <select id="math-unit1" class="glass-input unit-select"></select>
-                        </div>
+                <!-- Value 2 (Hidden for Conversion) -->
+                <div id="val2-block" class="input-block hidden">
+                    <label class="val-label">VALUE 2</label>
+                    <div class="card input-card">
+                        <input type="number" id="val2" value="1" step="any">
+                        <select id="unit2" class="unit-dropdown"></select>
                     </div>
-                    <div class="divider" id="math-operator">+</div>
-                    <div class="form-row">
-                        <div class="input-group">
-                            <label>Value 2</label>
-                            <input type="number" step="any" id="math-val2" class="glass-input" required>
-                        </div>
-                        <div class="input-group">
-                            <label>Unit 2</label>
-                            <select id="math-unit2" class="glass-input unit-select"></select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="input-group full-width">
-                            <label>Result Unit</label>
-                            <select id="math-target" class="glass-input unit-select"></select>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn primary-btn submit-btn" id="math-submit-btn">Calculate</button>
-                </form>
+                </div>
+
             </div>
 
-            <!-- Result Display -->
-            <div id="result-box" class="result-box hidden">
-                <div class="loader hidden"></div>
-                <h2 id="result-text"></h2>
+            <!-- Result Area -->
+            <div class="result-block">
+                <label class="val-label">RESULT</label>
+                <div class="card result-card">
+                    <div id="result-val" class="result-value">1.000</div>
+                    <select id="target-unit" class="unit-dropdown"></select>
+                </div>
             </div>
+
         </section>
     </div>
 
-    <!-- JS Logic -->
     <script src="/js/app.js"></script>
 </body>
 </html>
