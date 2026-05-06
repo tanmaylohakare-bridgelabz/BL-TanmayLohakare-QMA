@@ -9,6 +9,10 @@ import com.bridgelabz.quantitymeasurement.interfaces.Unit;
 import com.bridgelabz.quantitymeasurement.model.Quantity;
 import com.bridgelabz.quantitymeasurement.model.QuantityRecord;
 import com.bridgelabz.quantitymeasurement.repository.IQuantityRepository;
+import com.bridgelabz.quantitymeasurement.model.User;
+import com.bridgelabz.quantitymeasurement.repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +28,23 @@ public class QuantityService implements IQuantityService {
 
     private static final Logger logger = LoggerFactory.getLogger(QuantityService.class);
     private final IQuantityRepository repository;
+    private final UserRepository userRepository;
 
     // Dependency Injection (Spring Autowired)
     @Autowired
-    public QuantityService(IQuantityRepository repository) {
+    public QuantityService(IQuantityRepository repository, UserRepository userRepository) {
         this.repository = repository;
+        this.userRepository = userRepository;
         logger.info("QuantityService Initialized (Singleton Scope)");
+    }
+
+    private User getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getPrincipal() instanceof String) {
+            String email = (String) auth.getPrincipal();
+            return userRepository.findByEmail(email).orElse(null);
+        }
+        return null;
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -68,7 +83,7 @@ public class QuantityService implements IQuantityService {
         // UC17: Persist with Spring Data JPA
         if (repository != null) {
             repository.save(new QuantityRecord(
-                "CONVERT", requestDTO.getValue1(), requestDTO.getUnit1(), null, null, requestDTO.getTargetUnit(), result
+                "CONVERT", requestDTO.getValue1(), requestDTO.getUnit1(), null, null, requestDTO.getTargetUnit(), result, getCurrentUser()
             ));
             logger.info("Saved CONVERT operation to database");
         }
@@ -91,7 +106,7 @@ public class QuantityService implements IQuantityService {
         // UC17: Persist with Spring Data JPA
         if (repository != null) {
             repository.save(new QuantityRecord(
-                "COMPARE", requestDTO.getValue1(), requestDTO.getUnit1(), requestDTO.getValue2(), requestDTO.getUnit2(), null, result
+                "COMPARE", requestDTO.getValue1(), requestDTO.getUnit1(), requestDTO.getValue2(), requestDTO.getUnit2(), null, result, getCurrentUser()
             ));
             logger.info("Saved COMPARE operation to database");
         }
@@ -116,7 +131,7 @@ public class QuantityService implements IQuantityService {
         // UC17: Persist with Spring Data JPA
         if (repository != null) {
             repository.save(new QuantityRecord(
-                "ADD", requestDTO.getValue1(), requestDTO.getUnit1(), requestDTO.getValue2(), requestDTO.getUnit2(), requestDTO.getTargetUnit(), result
+                "ADD", requestDTO.getValue1(), requestDTO.getUnit1(), requestDTO.getValue2(), requestDTO.getUnit2(), requestDTO.getTargetUnit(), result, getCurrentUser()
             ));
             logger.info("Saved ADD operation to database");
         }
@@ -141,7 +156,7 @@ public class QuantityService implements IQuantityService {
         // UC17: Persist with Spring Data JPA
         if (repository != null) {
             repository.save(new QuantityRecord(
-                "SUBTRACT", requestDTO.getValue1(), requestDTO.getUnit1(), requestDTO.getValue2(), requestDTO.getUnit2(), requestDTO.getTargetUnit(), result
+                "SUBTRACT", requestDTO.getValue1(), requestDTO.getUnit1(), requestDTO.getValue2(), requestDTO.getUnit2(), requestDTO.getTargetUnit(), result, getCurrentUser()
             ));
             logger.info("Saved SUBTRACT operation to database");
         }

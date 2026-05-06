@@ -29,9 +29,14 @@ public class QuantityRecord {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    // UC18: Link record to the authenticated user
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public QuantityRecord() {}
 
-    public QuantityRecord(String operationType, Double value1, String unit1, Double value2, String unit2, String targetUnit, Double result) {
+    public QuantityRecord(String operationType, Double value1, String unit1, Double value2, String unit2, String targetUnit, Double result, User user) {
         this.operationType = operationType;
         this.value1 = value1;
         this.unit1 = unit1;
@@ -39,6 +44,7 @@ public class QuantityRecord {
         this.unit2 = unit2;
         this.targetUnit = targetUnit;
         this.result = result;
+        this.user = user;
     }
 
     public Long getId() { return id; }
@@ -67,4 +73,7 @@ public class QuantityRecord {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 }
