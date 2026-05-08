@@ -6,7 +6,7 @@ COPY auth-service/ auth-service/
 
 RUN mvn clean package -pl auth-service -am -DskipTests
 
-FROM eclipse-temurin:25-jdk
+FROM eclipse-temurin:21-jdk
 WORKDIR /app
 COPY --from=build /app/auth-service/target/*.jar app.jar
 

@@ -7,7 +7,7 @@ COPY api-gateway/ api-gateway/
 
 RUN mvn clean package -pl api-gateway -am -DskipTests
 
-FROM eclipse-temurin:25-jdk
+FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
 

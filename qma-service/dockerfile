@@ -6,7 +6,7 @@ COPY qma-service/ qma-service/
 
 RUN mvn clean package -pl qma-service -am -DskipTests
 
-FROM eclipse-temurin:25-jdk
+FROM eclipse-temurin:21-jdk
 WORKDIR /app
 COPY --from=build /app/qma-service/target/*.jar app.jar
 
