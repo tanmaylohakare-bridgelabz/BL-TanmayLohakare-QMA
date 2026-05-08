@@ -31,3 +31,22 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Logs and Errors ###
+*.log
+*.err
+logs/
+
+### OS Files ###
+.DS_Store
+Thumbs.db
+
+### Environment and Secrets ###
+.env
+.env.local
+.env.*.local
+
+### Node (Frontend) ###
+node_modules/
+dist/
+dist-ssr/

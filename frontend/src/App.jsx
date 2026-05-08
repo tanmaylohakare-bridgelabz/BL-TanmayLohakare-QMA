@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import SignIn from './components/SignIn';
+import SignUp from './components/SignUp';
 import './App.scss';
 import * as api from './services/api';
 
 const categoryUnits = {
-    LENGTH: ['INCHES', 'FEET', 'YARD', 'CENTIMETER'],
-    VOLUME: ['GALLON', 'LITRE', 'MILLILITER'],
+    LENGTH: ['INCH', 'FEET', 'YARD', 'CENTIMETER'],
+    VOLUME: ['GALLON', 'LITRE', 'MILLILITRE'],
     WEIGHT: ['KILOGRAM', 'GRAM', 'TONNE'],
     TEMPERATURE: ['FAHRENHEIT', 'CELSIUS']
 };
@@ -12,37 +15,39 @@ const categoryUnits = {
 const formatStr = str => str.charAt(0) + str.slice(1).toLowerCase();
 
 function App() {
-  const [token, setToken] = useState(null);
+  const searchParams = new URLSearchParams(window.location.search);
+  const tokenFromUrl = searchParams.get('token');
+
+  const [token, setToken] = useState(tokenFromUrl || localStorage.getItem('jwt_token'));
   
   const [category, setCategory] = useState('LENGTH');
   const [action, setAction] = useState('convert');
   
   const [val1, setVal1] = useState(1);
-  const [unit1, setUnit1] = useState('INCHES');
+  const [unit1, setUnit1] = useState('INCH');
   
   const [val2, setVal2] = useState(1);
   const [unit2, setUnit2] = useState('FEET');
   
-  const [targetUnit, setTargetUnit] = useState('INCHES');
+  const [targetUnit, setTargetUnit] = useState('INCH');
   const [result, setResult] = useState('1.000');
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const tokenFromUrl = urlParams.get('token');
-
     if (tokenFromUrl) {
       localStorage.setItem('jwt_token', tokenFromUrl);
       window.history.replaceState({}, document.title, window.location.pathname);
-      setToken(tokenFromUrl);
-    } else {
-      setToken(localStorage.getItem('jwt_token'));
     }
-  }, []);
+  }, [tokenFromUrl]);
 
   const handleLogout = () => {
     localStorage.removeItem('jwt_token');
     setToken(null);
+  };
+
+  const handleLogin = (newToken) => {
+    localStorage.setItem('jwt_token', newToken);
+    setToken(newToken);
   };
 
   useEffect(() => {
@@ -91,29 +96,13 @@ function App() {
   };
 
   if (!token) {
+    // If we're not authenticated, we only define the auth routes.
     return (
-      <div className="app-root">
-        <header className="top-banner">
-          <h1>Welcome To Quantity Measurement</h1>
-        </header>
-        <div className="main-container">
-          <section className="auth-box">
-            <h2>Sign In Required</h2>
-            <p>Please sign in with your Google account to use the tool.</p>
-            <a href="http://localhost:8080/oauth2/authorization/google" className="btn google-btn">
-                <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
-                    <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
-                        <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
-                        <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.369 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
-                        <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
-                        <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.109 -17.884 43.989 -14.754 43.989 Z"/>
-                    </g>
-                </svg>
-                Sign in with Google
-            </a>
-          </section>
-        </div>
-      </div>
+      <Routes>
+        <Route path="/login" element={<SignIn onLogin={handleLogin} />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
     );
   }
 
@@ -123,7 +112,9 @@ function App() {
   const showTargetUnit = action !== 'compare';
 
   return (
-    <div className="app-root">
+    <Routes>
+      <Route path="/" element={
+        <div className="app-root">
       <header className="top-banner">
         <h1>Welcome To Quantity Measurement</h1>
         <button onClick={handleLogout} className="logout-btn">Log Out</button>
@@ -219,6 +210,9 @@ function App() {
 
       </div>
     </div>
+      } />
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
   );
 }
 
