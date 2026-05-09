@@ -2,17 +2,14 @@
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# Copy the Parent POM
+# 1. Copy the Parent POM
 COPY pom.xml .
 
-# FIX: Remove the <modules> section from the root pom.xml so Maven doesn't look for missing folders
-RUN sed -i '/<modules>/,/<\/modules>/d' pom.xml
-
-# Copy the eureka-server folder
+# 2. Copy the eureka-server folder
 COPY eureka-server/ eureka-server/
 
-# Build only the eureka-server
-RUN mvn clean package -pl eureka-server -DskipTests
+# 3. Build using the eureka-server POM file directly
+RUN mvn clean package -f eureka-server/pom.xml -DskipTests
 
 # Stage 2: Run
 FROM eclipse-temurin:21-jdk

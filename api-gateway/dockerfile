@@ -2,17 +2,14 @@
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# Copy the Parent POM
+# 1. Copy the Parent POM
 COPY pom.xml .
 
-# FIX: Remove the <modules> section from the root pom.xml
-RUN sed -i '/<modules>/,/<\/modules>/d' pom.xml
-
-# Copy the api-gateway folder
+# 2. Copy the api-gateway folder
 COPY api-gateway/ api-gateway/
 
-# Build only the api-gateway
-RUN mvn clean package -pl api-gateway -DskipTests
+# 3. Build using the api-gateway POM file directly
+RUN mvn clean package -f api-gateway/pom.xml -DskipTests
 
 # Stage 2: Run
 FROM eclipse-temurin:21-jdk

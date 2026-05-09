@@ -2,17 +2,14 @@
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# Copy the Parent POM
+# 1. Copy the Parent POM
 COPY pom.xml .
 
-# FIX: Remove the <modules> section from the root pom.xml
-RUN sed -i '/<modules>/,/<\/modules>/d' pom.xml
-
-# Copy the auth-service folder
+# 2. Copy the auth-service folder
 COPY auth-service/ auth-service/
 
-# Build only the auth-service
-RUN mvn clean package -pl auth-service -DskipTests
+# 3. Build using the auth-service POM file directly
+RUN mvn clean package -f auth-service/pom.xml -DskipTests
 
 # Stage 2: Run
 FROM eclipse-temurin:21-jdk
