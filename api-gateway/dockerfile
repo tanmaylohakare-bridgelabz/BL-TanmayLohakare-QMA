@@ -1,18 +1,20 @@
+# Stage 1: Build
 FROM maven:3.9.6-eclipse-temurin-21 AS build
-
 WORKDIR /app
 
+# Copy the Parent POM first
 COPY pom.xml .
+
+# Copy the api-gateway folder
 COPY api-gateway/ api-gateway/
 
-RUN mvn clean package -pl api-gateway -am -DskipTests
+# Build only the api-gateway
+RUN mvn clean package -pl api-gateway -DskipTests
 
+# Stage 2: Run
 FROM eclipse-temurin:21-jdk
-
 WORKDIR /app
-
 COPY --from=build /app/api-gateway/target/*.jar app.jar
 
 EXPOSE 8080
-
 ENTRYPOINT ["java","-jar","app.jar"]

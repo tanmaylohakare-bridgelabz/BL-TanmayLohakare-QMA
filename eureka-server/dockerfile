@@ -1,11 +1,17 @@
+# Stage 1: Build
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
+# Copy the Parent POM first
 COPY pom.xml .
+
+# Copy the eureka-server folder
 COPY eureka-server/ eureka-server/
 
-RUN mvn clean package -pl eureka-server -am -DskipTests
+# Build only the eureka-server
+RUN mvn clean package -pl eureka-server -DskipTests
 
+# Stage 2: Run
 FROM eclipse-temurin:21-jdk
 WORKDIR /app
 COPY --from=build /app/eureka-server/target/*.jar app.jar
