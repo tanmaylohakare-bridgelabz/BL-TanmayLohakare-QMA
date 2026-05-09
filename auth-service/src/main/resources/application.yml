@@ -30,9 +30,9 @@ spring:
             scope:
               - profile
               - email
-            redirect-uri: "http://localhost:8080/login/oauth2/code/google"
+            redirect-uri: "${GATEWAY_URL:http://localhost:8080}/login/oauth2/code/google"
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
