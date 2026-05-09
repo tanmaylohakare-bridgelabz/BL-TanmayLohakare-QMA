@@ -2,8 +2,11 @@
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# Copy the Parent POM first
+# Copy the Parent POM
 COPY pom.xml .
+
+# FIX: Remove the <modules> section from the root pom.xml
+RUN sed -i '/<modules>/,/<\/modules>/d' pom.xml
 
 # Copy the auth-service folder
 COPY auth-service/ auth-service/
