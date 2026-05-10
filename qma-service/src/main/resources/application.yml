@@ -23,6 +23,9 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
 
 eureka:
+  instance:
+    hostname: ${RENDER_SERVICE_NAME:qma-service}
+    prefer-ip-address: false
   client:
     service-url:
-      defaultZone: ${EUREKA_URL}
+      defaultZone: ${EUREKA_URL}
