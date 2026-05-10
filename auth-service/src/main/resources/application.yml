@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: ${PORT:8081}
   forward-headers-strategy: framework
 
 spring:
@@ -37,8 +37,7 @@ spring:
 
 eureka:
   instance:
-    hostname: ${RENDER_SERVICE_NAME:auth-service}
-    prefer-ip-address: false
+    prefer-ip-address: true
   client:
     service-url:
-      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}

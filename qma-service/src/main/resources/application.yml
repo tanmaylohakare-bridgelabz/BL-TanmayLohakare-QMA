@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: ${PORT:8082}
 
 spring:
   config:
@@ -24,8 +24,7 @@ spring:
 
 eureka:
   instance:
-    hostname: ${RENDER_SERVICE_NAME:qma-service}
-    prefer-ip-address: false
+    prefer-ip-address: true
   client:
     service-url:
-      defaultZone: ${EUREKA_URL}
+      defaultZone: ${EUREKA_URL}
