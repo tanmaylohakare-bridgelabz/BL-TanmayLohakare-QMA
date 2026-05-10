@@ -42,11 +42,11 @@ export const subtractQuantities = async (payload) => {
 };
 
 export const login = async (payload) => {
-  const response = await axios.post(`http://localhost:8080/api/auth/login`, payload);
+  const response = await axios.post(` ${url}/api/auth/login`, payload);
   return response.data;
 };
 
 export const signup = async (payload) => {
-  const response = await axios.post(`http://localhost:8080/api/auth/signup`, payload);
+  const response = await axios.post(`${url}/api/auth/signup`, payload);
   return response.data;
 };
