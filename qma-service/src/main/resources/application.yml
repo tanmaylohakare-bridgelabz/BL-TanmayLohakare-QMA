@@ -1,25 +1,28 @@
 server:
-  port: 8082
+  port: ${SERVER_PORT}
 
 spring:
+  config:
+    import: optional:file:.env[.properties]
+
   application:
-    name: qma-service
+    name: ${SPRING_APPLICATION_NAME}
 
   datasource:
-    url: ${DB_URL:jdbc:mysql://qma-mysql-db-tanmaylohakare820-0a6c.k.aivencloud.com:10714/defaultdb?useSSL=true&trustServerCertificate=true}
-    username: ${DB_USERNAME:avnadmin}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: ${JPA_DDL_AUTO}
+    show-sql: ${JPA_SHOW_SQL}
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
+        dialect: ${HIBERNATE_DIALECT}
 
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+      defaultZone: ${EUREKA_URL}
